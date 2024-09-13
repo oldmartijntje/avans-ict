@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\oldma\\scripts\\.School_ict\\avans\\avans-ict\\ConsoleApp1henkie\\ConsoleApp1henkie.csproj": {}
+    "C:\\Users\\oldma\\scripts\\.School_ict\\avans\\avans-ict\\periode1\\applications\\09_13_24-ConsoleApp1henkie\\ConsoleApp1henkie.csproj": {}
   },
   "projects": {
-    "C:\\Users\\oldma\\scripts\\.School_ict\\avans\\avans-ict\\ConsoleApp1henkie\\ConsoleApp1henkie.csproj": {
+    "C:\\Users\\oldma\\scripts\\.School_ict\\avans\\avans-ict\\periode1\\applications\\09_13_24-ConsoleApp1henkie\\ConsoleApp1henkie.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\oldma\\scripts\\.School_ict\\avans\\avans-ict\\ConsoleApp1henkie\\ConsoleApp1henkie.csproj",
+        "projectUniqueName": "C:\\Users\\oldma\\scripts\\.School_ict\\avans\\avans-ict\\periode1\\applications\\09_13_24-ConsoleApp1henkie\\ConsoleApp1henkie.csproj",
         "projectName": "ConsoleApp1henkie",
-        "projectPath": "C:\\Users\\oldma\\scripts\\.School_ict\\avans\\avans-ict\\ConsoleApp1henkie\\ConsoleApp1henkie.csproj",
+        "projectPath": "C:\\Users\\oldma\\scripts\\.School_ict\\avans\\avans-ict\\periode1\\applications\\09_13_24-ConsoleApp1henkie\\ConsoleApp1henkie.csproj",
         "packagesPath": "C:\\Users\\oldma\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\oldma\\scripts\\.School_ict\\avans\\avans-ict\\ConsoleApp1henkie\\obj\\",
+        "outputPath": "C:\\Users\\oldma\\scripts\\.School_ict\\avans\\avans-ict\\periode1\\applications\\09_13_24-ConsoleApp1henkie\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
