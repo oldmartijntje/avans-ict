@@ -1,0 +1,14 @@
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\bin\Debug\net8.0\ConsoleApp1henkie.exe
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\bin\Debug\net8.0\ConsoleApp1henkie.deps.json
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\bin\Debug\net8.0\ConsoleApp1henkie.runtimeconfig.json
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\bin\Debug\net8.0\ConsoleApp1henkie.dll
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\bin\Debug\net8.0\ConsoleApp1henkie.pdb
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\obj\Debug\net8.0\ConsoleApp1henkie.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\obj\Debug\net8.0\ConsoleApp1henkie.AssemblyInfoInputs.cache
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\obj\Debug\net8.0\ConsoleApp1henkie.AssemblyInfo.cs
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\obj\Debug\net8.0\ConsoleApp1henkie.csproj.CoreCompileInputs.cache
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\obj\Debug\net8.0\ConsoleApp1henkie.dll
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\obj\Debug\net8.0\refint\ConsoleApp1henkie.dll
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\obj\Debug\net8.0\ConsoleApp1henkie.pdb
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\obj\Debug\net8.0\ConsoleApp1henkie.genruntimeconfig.cache
+C:\Users\oldma\scripts\.School_ict\avans\.code\ConsoleApp1henkie\obj\Debug\net8.0\ref\ConsoleApp1henkie.dll
