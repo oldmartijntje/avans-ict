@@ -1,0 +1,15 @@
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\bin\Debug\net8.0\ConsoleGame.exe
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\bin\Debug\net8.0\ConsoleGame.deps.json
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\bin\Debug\net8.0\ConsoleGame.runtimeconfig.json
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\bin\Debug\net8.0\ConsoleGame.dll
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\bin\Debug\net8.0\ConsoleGame.pdb
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\obj\Debug\net8.0\ConsoleGame.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\obj\Debug\net8.0\ConsoleGame.AssemblyInfoInputs.cache
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\obj\Debug\net8.0\ConsoleGame.AssemblyInfo.cs
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\obj\Debug\net8.0\ConsoleGame.csproj.CoreCompileInputs.cache
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\obj\Debug\net8.0\ConsoleGame.sourcelink.json
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\obj\Debug\net8.0\ConsoleGame.dll
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\obj\Debug\net8.0\refint\ConsoleGame.dll
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\obj\Debug\net8.0\ConsoleGame.pdb
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\obj\Debug\net8.0\ConsoleGame.genruntimeconfig.cache
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period1\applications\ConsoleGame\obj\Debug\net8.0\ref\ConsoleGame.dll
