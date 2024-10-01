@@ -11,29 +11,22 @@
     <p>Dit is de beschrijving.</p>
 </header>
 <main>
-    <form method="post" @onsubmit="Submit" @formname="starship-plain-form">
-    <AntiforgeryToken />
-    <div>
-        <label>
-            Identifier: 
-            <InputText @bind-Value="Model!.Id" />
-        </label>
-    </div>
-    <div>
-        <button type="submit">Submit</button>
-    </div>
-</form>
     <section style="display:flex; column-gap: 1rem;">
-        <div>
+        <form method="post" @onsubmit="Submit" @formname="starship-plain-form">
+        <AntiforgeryToken />
             <label for="meterId">Meter ID:</label>
             <div class="input-group mb-3">
                 <span class="input-group-text">2019-ETI-EMON-V01-</span>
-                @* <input type="text" id="meterId" class="form-control" placeholder="Zoek naar een meter"
-                   @bind="machineIdentifier"/> *@
-                   <InputText @bind-Value="machineIdentifier" class="form-control" @oninput="OnSubmit" />
+                <label>
+                    Identifier: 
+                    <InputText @bind-Value="Model!.machineIdentifier" />
+                </label>
                 <span class="input-group-text">-16405E</span>
             </div>
-        </div>
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
         <div class="mb-3">
             <label for="meterId">Cost:</label>
             <input type="text" id="cost" class="form-control" placeholder="Zoek naar een meter" value="17E437" />
@@ -84,15 +77,13 @@ else
 
 @code {
     [SupplyParameterFromForm]
-    private Starship? Model { get; set; }
+    private Settings? Model { get; set; }
     protected override void OnInitialized() => Model ??= new();
-    private string? machineIdentifier = "17E437";
     private List<Measurement>? measurements;
 
     private async Task OnSubmit() {
         Console.WriteLine("e.");
-        machineIdentifier = "aaaa";
-        Console.WriteLine(machineIdentifier);
+        Console.WriteLine();
     }
 
     protected override async Task OnInitializedAsync()
@@ -101,23 +92,20 @@ else
         
         int meterId = 15433042;
 
-        
         int numberOfDays = 3;
-
         
         string aggegationWindow = "5m";
 
-        
         measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggegationWindow);
     }
 
     private void Submit()
     {
-        Logger.LogInformation("Id = {Id}", Model?.Id);
+        Logger.LogInformation("Id = {Id}", Model?.machineIdentifier);
     }
 
-    public class Starship
+    public class Settings
     {
-        public string? Id { get; set; }
+        public string? machineIdentifier { get; set; }
     }
 }
