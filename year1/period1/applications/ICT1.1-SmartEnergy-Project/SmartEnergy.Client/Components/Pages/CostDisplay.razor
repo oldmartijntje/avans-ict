@@ -1,0 +1,102 @@
+@page "/costDisplay"
+@attribute [StreamRendering]
+@inject IMeasurementRepository measurementRepository;
+
+<PageTitle>CostDisplay</PageTitle>
+
+<header>
+    <h1>Martijn van Houwelingen</h1>
+
+    <p>Dit is de beschrijving.</p>
+</header>
+<main>
+    <section style="display:flex; column-gap: 1rem;">
+        <div>
+            <label for="meterId">Meter ID:</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">2019-ETI-EMON-V01-</span>
+                <input type="text" id="meterId" class="form-control" placeholder="Zoek naar een meter"
+                  @bind="machineIdentifier"/>
+                <span class="input-group-text">-16405E</span>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="meterId">Cost:</label>
+            <input type="text" id="cost" class="form-control" placeholder="Zoek naar een meter" value="17E437" />
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" @onclick="OnSubmit">Refresh</button>
+        </div>
+    </section>
+</main>
+
+@if (measurements == null)
+{
+    <p><em>Data wordt geladen...</em></p>
+}
+else
+{
+    <!--
+        When the measurements variable has values in it we will draw a table with a header (thead) and
+        add the data to the table (tbody). We use the foreach to loop over te list of measurements and
+        a single line <tr> is added for each of the indivudial measurement objects. Colums are seperated
+        using <th> for the header or <td> for the body as you can see in the code below.
+    -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Timestamp (UTC)</th>
+                <th>Location ID</th>
+                <th>Sensor</th>
+                <th>Value</th>
+                <th>Unit</th>
+                <th>Price (energy only)</th>
+                <th>Temperature</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var measurement in measurements)
+            {
+                <tr>
+                    <td>@measurement.Timestamp</td>
+                    <td>@measurement.LocationId</td>
+                    <td>@measurement.Sensor</td>
+                    <td>@measurement.Value</td>
+                    <td>@measurement.Unit</td>
+                    <td>@measurement.EnergyPrice</td>
+                    <td>@measurement.Temperature</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private string? machineIdentifier = "17E437";
+    private List<Measurement>? measurements;
+
+    private async Task OnSubmit() {
+        Console.WriteLine("e.");
+        machineIdentifier = "aaaa";
+        Console.WriteLine(machineIdentifier);
+        await FetchMeasurements();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("My debug output.");
+        await OnSubmit();
+        
+        int meterId = 15433042;
+
+        
+        int numberOfDays = 3;
+
+        
+        string aggegationWindow = "5m";
+
+        
+        measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggegationWindow);
+    }
+}
