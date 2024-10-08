@@ -24,9 +24,12 @@
                         <span class="input-group-text">-16405E</span>
                     </div>
                 </div>
-                <div class="mb-3">
+                <div class="input-group">
                     <label for="cost">Cost per KWH:</label>
-                    <InputNumber @bind-Value="Model!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text">€</span>
+                        <InputNumber @bind-Value="Model!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
+                    </div>
                 </div>
                 <div class="mb-3">
                     <input type="date" TValue="DateOnly" @bind-value="@date1" Placeholder="Enter Date" />
