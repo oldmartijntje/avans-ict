@@ -15,27 +15,33 @@
     <section style="display:flex; column-gap: 1rem;">
         <form method="post" @onsubmit="Submit" @formname="starship-plain-form">
         <AntiforgeryToken />
-            <div class="input-group" style="column-gap: 1rem; flex-wrap: nowrap;">
-                <div class="input-group">
-                    <label for="meterId">Meter ID:</label>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">2019-ETI-EMON-V01-</span>
-                    
-                        <InputText @bind-Value="Model!.machineIdentifier" id="machineIdentifier" />
-                        <span class="input-group-text">-16405E</span>
+            <div style="row-gap: 1rem; flex-wrap: wrap; flex-direction: column;">
+                <div class="input-group" style="column-gap: 1rem; flex-wrap: nowrap;">
+                    <div class="input-group">
+                        <label for="meterId">Meter ID:</label>
+                        <div class="input-group mb-3" style="flex-wrap: nowrap;">
+                            <span class="input-group-text">2019-ETI-EMON-V01-</span>
+                        
+                            <InputText @bind-Value="Model!.machineIdentifier" id="machineIdentifier" />
+                            <span class="input-group-text">-16405E</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="cost">Cost per KWH:</label>
+                        <div class="mb-3 input-group">
+                            <span class="input-group-text">€</span>
+                            <InputNumber @bind-Value="Model!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
+                        </div>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label for="cost">Cost per KWH:</label>
-                    <div class="mb-3 input-group">
-                        <span class="input-group-text">€</span>
-                        <InputNumber @bind-Value="Model!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
+                <div class="input-group" style="column-gap: 1rem; flex-wrap: nowrap;">
+                    <div class="mb-3">
+                        <InputDate @bind-Value="Model!.date1" TValue="DateTime" Placeholder="Enter start Date" id="date1" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <InputDate @bind-Value="Model!.date2" TValue="DateTime" Placeholder="Enter end Date" id="date2" class="form-control" />
                     </div>
                 </div>
-                <div class="mb-3">
-                    <input type="date" TValue="DateOnly" @bind-value="@date1" Placeholder="Enter Date" />
-                </div>
-                <div class="mb-3">Entered date: @date1</div>
             </div>
             <div>
                 <button type="submit">Submit</button>
@@ -127,7 +133,7 @@ else
     private Settings? Model { get; set; }
     protected override void OnInitialized() => Model ??= new();
     private List<Measurement>? measurements;
-    private DateOnly date1 = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -145,17 +151,23 @@ else
     private void Submit()
     {
         Logger.LogInformation("Id = {Id}", Model?.machineIdentifier);
+        Logger.LogInformation("Cost = {Cost}", Model?.cost);
+        Logger.LogInformation("Date = {Date}", Model?.date1);
     }
 
     public class Settings
     {
         public string? machineIdentifier { get; set; }
         public double? cost { get; set; }
+        public DateTime date1 { get; set; }
+        public DateTime date2 { get; set; }
 
         public Settings()
         {
             machineIdentifier = "17E437";
             cost = 0.25;
+            date1 = DateTime.Now.AddDays(-7);
+            date2 = DateTime.Now;
         }
     }
 }
