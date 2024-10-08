@@ -28,6 +28,10 @@
                     <label for="cost">Cost per KWH:</label>
                     <InputNumber @bind-Value="Model!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
                 </div>
+                <div class="mb-3">
+                    <input type="date" TValue="DateOnly" @bind-value="@date1" Placeholder="Enter Date" />
+                </div>
+                <div class="mb-3">Entered date: @date1</div>
             </div>
             <div>
                 <button type="submit">Submit</button>
@@ -119,11 +123,7 @@ else
     private Settings? Model { get; set; }
     protected override void OnInitialized() => Model ??= new();
     private List<Measurement>? measurements;
-
-    private async Task OnSubmit() {
-        Console.WriteLine("e.");
-        Console.WriteLine();
-    }
+    private DateOnly date1 = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
 
     protected override async Task OnInitializedAsync()
     {
