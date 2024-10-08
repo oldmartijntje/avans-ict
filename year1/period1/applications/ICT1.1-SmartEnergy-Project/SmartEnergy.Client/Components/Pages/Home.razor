@@ -6,3 +6,14 @@
 
 Je hebt de applicatie opgestart. Navigeer naar <a href="measurements">Measurements</a> om
 te controleren of je de verbinding met de database correct hebt ingesteld. 
+
+<script>
+    const myDebugger = localStorage.getItem('debugger');
+    if (myDebugger === 'true') {
+        console.log('Debugger is enabled');
+        window.location.href = "/costDisplay";
+    }
+    else {
+        console.log('Debugger is disabled');
+    }
+</script>

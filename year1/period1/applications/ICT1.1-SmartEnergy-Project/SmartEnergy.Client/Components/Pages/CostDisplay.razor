@@ -17,10 +17,8 @@
             <label for="meterId">Meter ID:</label>
             <div class="input-group mb-3">
                 <span class="input-group-text">2019-ETI-EMON-V01-</span>
-                <label>
-                    Identifier: 
+                
                     <InputText @bind-Value="Model!.machineIdentifier" />
-                </label>
                 <span class="input-group-text">-16405E</span>
             </div>
             <div>
@@ -28,8 +26,8 @@
             </div>
         </form>
         <div class="mb-3">
-            <label for="meterId">Cost:</label>
-            <input type="text" id="cost" class="form-control" placeholder="Zoek naar een meter" value="17E437" />
+            <label for="cost">Cost:</label>
+            <InputNumber @bind-Value="Model!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.1" />
         </div>
     </section>
 </main>
@@ -107,5 +105,12 @@ else
     public class Settings
     {
         public string? machineIdentifier { get; set; }
+        public double? cost { get; set; }
+
+        public Settings()
+        {
+            machineIdentifier = "17E437";
+            cost = 1.1;
+        }
     }
 }
