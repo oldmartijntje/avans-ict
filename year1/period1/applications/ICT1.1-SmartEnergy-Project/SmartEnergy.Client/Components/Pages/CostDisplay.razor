@@ -18,7 +18,7 @@
             <div class="input-group mb-3">
                 <span class="input-group-text">2019-ETI-EMON-V01-</span>
                 
-                    <InputText @bind-Value="Model!.machineIdentifier" />
+                    <InputText @bind-Value="Model!.machineIdentifier" id="machineIdentifier" />
                 <span class="input-group-text">-16405E</span>
             </div>
             <div>
@@ -27,10 +27,41 @@
         </form>
         <div class="mb-3">
             <label for="cost">Cost:</label>
-            <InputNumber @bind-Value="Model!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.1" />
+            <InputNumber @bind-Value="Model!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
         </div>
     </section>
 </main>
+<script defer>
+    console.log('CostDisplay page loaded'); 
+    setTimeout(() => {
+        onInit();
+    }, 1000);
+
+    function onInit() {
+        const mySettings = localStorage.getItem('avans-smartmeter-settings');
+        if (!mySettings) {
+            var currentSettings = { 
+                machineIdentifier: document.getElementById('machineIdentifier').value,
+                cost: document.getElementById('cost').value 
+            };
+            localStorage.setItem('avans-smartmeter-settings', JSON.stringify(currentSettings));
+        } else {
+            const currentSettings = JSON.parse(mySettings);
+            document.getElementById('machineIdentifier').value = currentSettings.machineIdentifier;
+            document.getElementById('cost').value = currentSettings.cost;
+        }
+        document.getElementById('machineIdentifier').addEventListener('change', onChange);
+        document.getElementById('cost').addEventListener('change', onChange);
+    }
+
+    function onChange() {
+        var currentSettings = { 
+            machineIdentifier: document.getElementById('machineIdentifier').value,
+            cost: document.getElementById('cost').value 
+        };
+        localStorage.setItem('avans-smartmeter-settings', JSON.stringify(currentSettings));
+    }
+</script>
 
 @if (measurements == null)
 {
@@ -110,7 +141,7 @@ else
         public Settings()
         {
             machineIdentifier = "17E437";
-            cost = 1.1;
+            cost = 0.25;
         }
     }
 }
