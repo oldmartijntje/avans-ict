@@ -145,9 +145,7 @@
     {
         Console.WriteLine("My debug output.");
         
-        int meterId = 15433042;
-
-        
+        int meterId = hexStringToInt(ActiveSettings.machineIdentifier);
 
         int numberOfDays = 3;
         
@@ -173,6 +171,11 @@
         // await base.OnAfterRenderAsync(firstRender);
     }
 
+    private int hexStringToInt(string hexString)
+    {
+        return int.Parse(hexString, System.Globalization.NumberStyles.HexNumber);
+    }
+
     private async Task Submit()
     {
         Logger.LogInformation("Id = {Id}", ActiveSettings?.machineIdentifier);
@@ -182,7 +185,7 @@
         // Set flag to show data
         ActiveSettings.showData = true;
 
-        int meterId = 15433042;
+        int meterId = hexStringToInt(ActiveSettings.machineIdentifier);
 
         
 
