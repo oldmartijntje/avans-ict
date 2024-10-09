@@ -23,7 +23,7 @@
                         <div class="input-group mb-3" style="flex-wrap: nowrap;">
                             <span class="input-group-text">2019-ETI-EMON-V01-</span>
                         
-                            <InputText @bind-Value="ActiveSettings!.machineIdentifier" @onchange="Submit" id="machineIdentifier" />
+                            <InputText @bind-Value="ActiveSettings!.machineIdentifier" id="machineIdentifier" />
                             <span class="input-group-text">-16405E</span>
                         </div>
                     </div>
@@ -31,23 +31,30 @@
                         <label for="cost">Cost per KWH:</label>
                         <div class="mb-3 input-group">
                             <span class="input-group-text">€</span>
-                            <InputNumber @bind-Value="ActiveSettings!.cost" @onchange="Submit" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
+                            <InputNumber @bind-Value="ActiveSettings!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
                         </div>
                     </div>
                 </div>
                 <div class="input-group" style="column-gap: 1rem; flex-wrap: nowrap;">
                     <div class="mb-3">
-                        <InputDate @bind-Value="ActiveSettings!.date1" @onchange="Submit" TValue="DateTime" Placeholder="Enter start Date" id="date1" class="form-control" />
+                        <InputDate @bind-Value="ActiveSettings!.date1" TValue="DateTime" Placeholder="Enter start Date" id="date1" class="form-control" />
                     </div>
                     <div class="mb-3">
-                        <InputDate @bind-Value="ActiveSettings!.date2" @onchange="Submit" TValue="DateTime" Placeholder="Enter end Date" id="date2" class="form-control" />
+                        <InputDate @bind-Value="ActiveSettings!.date2" TValue="DateTime" Placeholder="Enter end Date" id="date2" class="form-control" />
                     </div>
                     <p>@ActiveSettings.date2</p>
-                    <p>@ActiveSettings.date2</p>
+                    <p>@ActiveSettings.showData</p>
                 </div>
             </div>
             <div>
-                <button type="submit">Refresh</button>
+                @if (ActiveSettings.showData)
+                {
+                    <button type="submit">Refresh</button>
+                }
+                else
+                {
+                    <button type="submit">Load</button>
+                }
             </div>
         </form>
         
@@ -76,9 +83,6 @@
             const currentSettings = JSON.parse(mySettings);
             document.getElementById('machineIdentifier').value = currentSettings.machineIdentifier;
             document.getElementById('cost').value = currentSettings.cost;
-
-            machineIdentifierElement.dispatchEvent(new Event('change'));
-            costElement.dispatchEvent(new Event('change'));
         }
         document.getElementById('machineIdentifier').addEventListener('change', onChange);
         document.getElementById('cost').addEventListener('change', onChange);
@@ -93,7 +97,7 @@
     }
 </script>
 
-@if (measurements == null)
+@if (measurements == null  || !ActiveSettings.showData)
 {
     <p><em>Data wordt geladen...</em></p>
 }
