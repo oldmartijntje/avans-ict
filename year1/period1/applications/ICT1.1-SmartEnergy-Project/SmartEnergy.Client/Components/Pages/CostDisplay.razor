@@ -2,6 +2,7 @@
 @attribute [StreamRendering]
 @inject IMeasurementRepository measurementRepository;
 @inject ILogger<CostDisplay> Logger
+@rendermode InteractiveServer
 
 <PageTitle>CostDisplay</PageTitle>
 
@@ -13,7 +14,7 @@
 </header>
 <main>
     <section style="display:flex; column-gap: 1rem;">
-        <form method="post" @onsubmit="Submit" @formname="starship-plain-form">
+        <form method="post" @onsubmit="Submit" @formname="starship-plain-form" id="myForm">
         <AntiforgeryToken />
             <div style="row-gap: 1rem; flex-wrap: wrap; flex-direction: column;">
                 <div class="input-group" style="column-gap: 1rem; flex-wrap: nowrap;">
@@ -22,7 +23,7 @@
                         <div class="input-group mb-3" style="flex-wrap: nowrap;">
                             <span class="input-group-text">2019-ETI-EMON-V01-</span>
                         
-                            <InputText @bind-Value="Model!.machineIdentifier" id="machineIdentifier" />
+                            <InputText @bind-Value="ActiveSettings!.machineIdentifier" @onchange="Submit" id="machineIdentifier" />
                             <span class="input-group-text">-16405E</span>
                         </div>
                     </div>
@@ -30,21 +31,23 @@
                         <label for="cost">Cost per KWH:</label>
                         <div class="mb-3 input-group">
                             <span class="input-group-text">€</span>
-                            <InputNumber @bind-Value="Model!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
+                            <InputNumber @bind-Value="ActiveSettings!.cost" @onchange="Submit" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
                         </div>
                     </div>
                 </div>
                 <div class="input-group" style="column-gap: 1rem; flex-wrap: nowrap;">
                     <div class="mb-3">
-                        <InputDate @bind-Value="Model!.date1" TValue="DateTime" Placeholder="Enter start Date" id="date1" class="form-control" />
+                        <InputDate @bind-Value="ActiveSettings!.date1" @onchange="Submit" TValue="DateTime" Placeholder="Enter start Date" id="date1" class="form-control" />
                     </div>
                     <div class="mb-3">
-                        <InputDate @bind-Value="Model!.date2" TValue="DateTime" Placeholder="Enter end Date" id="date2" class="form-control" />
+                        <InputDate @bind-Value="ActiveSettings!.date2" @onchange="Submit" TValue="DateTime" Placeholder="Enter end Date" id="date2" class="form-control" />
                     </div>
+                    <p>@ActiveSettings.date2</p>
+                    <p>@ActiveSettings.date2</p>
                 </div>
             </div>
             <div>
-                <button type="submit">Submit</button>
+                <button type="submit">Refresh</button>
             </div>
         </form>
         
@@ -59,7 +62,7 @@
     console.log('CostDisplay page loaded'); 
     setTimeout(() => {
         onInit();
-    }, 1000);
+    }, 1);
 
     function onInit() {
         const mySettings = localStorage.getItem('avans-smartmeter-settings');
@@ -73,6 +76,9 @@
             const currentSettings = JSON.parse(mySettings);
             document.getElementById('machineIdentifier').value = currentSettings.machineIdentifier;
             document.getElementById('cost').value = currentSettings.cost;
+
+            machineIdentifierElement.dispatchEvent(new Event('change'));
+            costElement.dispatchEvent(new Event('change'));
         }
         document.getElementById('machineIdentifier').addEventListener('change', onChange);
         document.getElementById('cost').addEventListener('change', onChange);
@@ -130,16 +136,17 @@ else
 
 @code {
     [SupplyParameterFromForm]
-    private Settings? Model { get; set; }
-    protected override void OnInitialized() => Model ??= new();
+    private Settings? ActiveSettings { get; set; }
+    protected override void OnInitialized() => ActiveSettings ??= new();
     private List<Measurement>? measurements;
-    
 
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine("My debug output.");
         
         int meterId = 15433042;
+
+        
 
         int numberOfDays = 3;
         
@@ -148,11 +155,13 @@ else
         measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggegationWindow);
     }
 
-    private void Submit()
+    private Task Submit()
     {
-        Logger.LogInformation("Id = {Id}", Model?.machineIdentifier);
-        Logger.LogInformation("Cost = {Cost}", Model?.cost);
-        Logger.LogInformation("Date = {Date}", Model?.date1);
+        Logger.LogInformation("Id = {Id}", ActiveSettings?.machineIdentifier);
+        Logger.LogInformation("Cost = {Cost}", ActiveSettings?.cost);
+        Logger.LogInformation("Date = {Date}", ActiveSettings?.date1);
+        ActiveSettings.showData = true;
+        return Task.CompletedTask;
     }
 
     public class Settings
@@ -161,6 +170,7 @@ else
         public double? cost { get; set; }
         public DateTime date1 { get; set; }
         public DateTime date2 { get; set; }
+        public bool showData { get; set; }
 
         public Settings()
         {
@@ -168,6 +178,7 @@ else
             cost = 0.25;
             date1 = DateTime.Now.AddDays(-7);
             date2 = DateTime.Now;
+            showData = false;
         }
     }
 }

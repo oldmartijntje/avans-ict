@@ -152,7 +152,7 @@ public class InfluxMeasurementRepository : IMeasurementRepository
                 }
                 else
                 {
-                    value = Math.Round(value, 0);
+                    value = Math.Round(value, 3);
                 }
 
                 // round up to the full hour so we can lookup the energy price for the hourly slot
