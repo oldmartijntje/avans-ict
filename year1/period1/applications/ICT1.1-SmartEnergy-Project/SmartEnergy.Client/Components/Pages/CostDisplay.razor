@@ -93,7 +93,7 @@
 </main>
 <style>
     header {
-        background-color: aqua;
+        background-color: #005eff;
     }
 </style>
 
@@ -105,32 +105,29 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("My debug output.");
-        
+        await FetchAndRenderData();
+    }
+    
+    private async Task FetchAndRenderData()
+    {
         int meterId = hexStringToInt(ActiveSettings.machineIdentifier);
-
         int numberOfDays = 3;
-        
-        string aggegationWindow = "5m";
+        string aggregationWindow = "5m";
 
-        measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggegationWindow);
-        
-        if (measurements != null)
-        {
-            await RenderMyGraph();
-        }
+        measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggregationWindow);
+        await RenderMyGraph();
+        StateHasChanged();
     }
     
     private LineChart lineChart = default!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // if (firstRender)
-        // {
-        //     await RenderWormAsync();
-        // }
-        //
-        // await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            await RenderMyGraph();
+            StateHasChanged();
+        }
     }
 
     private int hexStringToInt(string hexString)
@@ -144,25 +141,8 @@
         Logger.LogInformation("Cost = {Cost}", ActiveSettings?.cost);
         Logger.LogInformation("Date = {Date}", ActiveSettings?.date1);
 
-        // Set flag to show data
-        int meterId = hexStringToInt(ActiveSettings.machineIdentifier);
-
-        
-
-        int numberOfDays = 3;
-        
-        string aggegationWindow = "5m";
-        // Load data (measurements) asynchronously before rendering the graph
-        measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggegationWindow);
-
-        // If data is successfully fetched, render the graph
-        if (measurements != null)
-        {
-            await RenderMyGraph();
-        }
-
-        // Trigger a state update to ensure the UI is updated after data load
-        StateHasChanged();
+        await FetchAndRenderData();
+        await RenderMyGraph();
     }
 
 
@@ -241,5 +221,6 @@
         {
         await lineChart.InitializeAsync(data, options);
         }
+        StateHasChanged();
     }
 }
