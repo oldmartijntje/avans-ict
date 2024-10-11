@@ -55,7 +55,7 @@
     }
     else
     {
-    <LineChart @ref="lineChart" />
+        <LineChart @ref="lineChart" Width="800" Height="300" />
     <!--
         When the measurements variable has values in it we will draw a table with a header (thead) and
         add the data to the table (tbody). We use the foreach to loop over te list of measurements and
@@ -102,6 +102,7 @@
     private Settings? ActiveSettings { get; set; }
     protected override void OnInitialized() => ActiveSettings ??= new();
     private List<Measurement>? measurements;
+    private LineChart lineChart = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -119,15 +120,14 @@
         StateHasChanged();
     }
     
-    private LineChart lineChart = default!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (!firstRender)
         {
             await RenderMyGraph();
-            StateHasChanged();
         }
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     private int hexStringToInt(string hexString)
@@ -149,7 +149,6 @@
     public async Task RenderMyGraph()
     {
         await RenderWormAsync();
-        await base.OnAfterRenderAsync(true);
     }
 
     public class Settings
@@ -221,6 +220,6 @@
         {
         await lineChart.InitializeAsync(data, options);
         }
-        StateHasChanged();
+        // StateHasChanged();
     }
 }
