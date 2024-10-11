@@ -45,20 +45,13 @@
                 </div>
             </div>
             <div>
-                @if (ActiveSettings.showData)
-                {
-                    <button type="submit" id="submitButton">Refresh</button>
-                }
-                else
-                {
-                    <button type="submit" id="submitButton">Load Data</button>
-                }
+                <button type="submit" id="submitButton">Refresh</button>
             </div>
         </form>
     </section>
-    @if (measurements == null  || !ActiveSettings.showData)
+    @if (measurements == null)
     {
-
+        <p><em>Data wordt geladen...</em></p>
     }
     else
     {
@@ -103,37 +96,6 @@
         background-color: aqua;
     }
 </style>
-<script defer>
-    console.log('CostDisplay page loaded'); 
-    setTimeout(() => {
-        onInit();
-    }, 1);
-
-    function onInit() {
-        const mySettings = localStorage.getItem('avans-smartmeter-settings');
-        if (!mySettings) {
-            var currentSettings = { 
-                machineIdentifier: document.getElementById('machineIdentifier').value,
-                cost: document.getElementById('cost').value 
-            };
-            localStorage.setItem('avans-smartmeter-settings', JSON.stringify(currentSettings));
-        } else {
-            const currentSettings = JSON.parse(mySettings);
-            document.getElementById('machineIdentifier').value = currentSettings.machineIdentifier;
-            document.getElementById('cost').value = currentSettings.cost;
-        }
-        document.getElementById('machineIdentifier').addEventListener('change', onChange);
-        document.getElementById('cost').addEventListener('change', onChange);
-    }
-
-    function onChange() {
-        var currentSettings = { 
-            machineIdentifier: document.getElementById('machineIdentifier').value,
-            cost: document.getElementById('cost').value 
-        };
-        localStorage.setItem('avans-smartmeter-settings', JSON.stringify(currentSettings));
-    }
-</script>
 
 @code {
     [SupplyParameterFromForm]
@@ -153,7 +115,7 @@
 
         measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggegationWindow);
         
-        if (measurements != null && ActiveSettings.showData)
+        if (measurements != null)
         {
             await RenderMyGraph();
         }
@@ -183,8 +145,6 @@
         Logger.LogInformation("Date = {Date}", ActiveSettings?.date1);
 
         // Set flag to show data
-        ActiveSettings.showData = true;
-
         int meterId = hexStringToInt(ActiveSettings.machineIdentifier);
 
         
@@ -218,7 +178,6 @@
         public double? cost { get; set; }
         public DateTime date1 { get; set; }
         public DateTime date2 { get; set; }
-        public bool showData { get; set; }
 
         public Settings()
         {
@@ -226,7 +185,6 @@
             cost = 0.25;
             date1 = DateTime.Now.AddDays(-7);
             date2 = DateTime.Now;
-            showData = false;
         }
     }
     
