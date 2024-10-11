@@ -111,7 +111,7 @@
     
     private async Task FetchAndRenderData()
     {
-        int meterId = hexStringToInt(ActiveSettings.machineIdentifier);
+        int meterId = ConvertHexToInt(ActiveSettings.machineIdentifier);
         int numberOfDays = 3;
         string aggregationWindow = "5m";
 
@@ -130,13 +130,14 @@
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private int hexStringToInt(string hexString)
+    private int ConvertHexToInt(string hexString)
     {
-        return int.Parse(hexString, System.Globalization.NumberStyles.HexNumber);
+        return (int)Convert.ToUInt32(hexString, 16);
     }
 
     private async Task Submit()
     {
+        measurements = null;
         Logger.LogInformation("Id = {Id}", ActiveSettings?.machineIdentifier);
         Logger.LogInformation("Cost = {Cost}", ActiveSettings?.cost);
         Logger.LogInformation("Date = {Date}", ActiveSettings?.date1);
