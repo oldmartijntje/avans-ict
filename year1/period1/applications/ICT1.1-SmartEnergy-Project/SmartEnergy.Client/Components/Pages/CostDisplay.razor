@@ -69,31 +69,27 @@
         <thead>
         <tr>
             <th>Timestamp (UTC)</th>
-            <th>Location ID</th>
-            <th>Sensor</th>
-            <th>Value</th>
-            <th>Unit</th>
-            <th>Price (energy only)</th>
-            <th>Temperature</th>
+            <th>GetHourCost Dynamic</th>
+            <th>GetDayCost Dynamic</th>
+            <th>GetTotalCost Dynamic</th>
+            <th>GetHourCost Static</th>
+            <th>GetDayCost Static</th>
+            <th>GetTotalCost Static</th>
         </tr>
         </thead>
         <tbody>
-        @{
-            double lastValue = measurements[0].Value ?? 0.0;
-        }
-        @foreach (var measurement in measurements)
+        @foreach (var measurement in customMeasurements)
         {
-            double currentAmount = (measurement.Value ?? lastValue) - lastValue;
-            lastValue = measurement.Value ?? lastValue;
+
             <tr>
                 
-                <td>@getLocalTime(measurement.Timestamp)</td>
-                <td>@measurement.LocationId</td>
-                <td>@measurement.Sensor</td>
-                <td>@currentAmount</td>
-                <td>@measurement.Unit</td>
-                <td>@measurement.EnergyPrice</td>
-                <td>@measurement.Temperature</td>
+                <td>@getLocalTime(measurement.date)</td>
+                <td>@measurement.GetHourCost((double)ActiveSettings.cost)[0]</td>
+                <td>@measurement.GetDayCost((double)ActiveSettings.cost)[0]</td>
+                <td>@measurement.GetTotalCost((double)ActiveSettings.cost)[0]</td>
+                <td>@measurement.GetHourCost((double)ActiveSettings.cost)[1]</td>
+                <td>@measurement.GetDayCost((double)ActiveSettings.cost)[1]</td>
+                <td>@measurement.GetTotalCost((double)ActiveSettings.cost)[1]</td>
             </tr>
         }
         </tbody>
