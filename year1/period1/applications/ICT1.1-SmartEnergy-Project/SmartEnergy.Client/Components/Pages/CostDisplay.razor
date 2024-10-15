@@ -2,6 +2,7 @@
 @attribute [StreamRendering]
 @inject IMeasurementRepository measurementRepository;
 @inject ILogger<CostDisplay> Logger
+@using System.Globalization;
 @rendermode InteractiveServer
 
 <PageTitle>CostDisplay</PageTitle>
@@ -12,7 +13,7 @@
 
     <p>Dit is de beschrijving.</p>
 </header>
-<main>
+<article>
     <section style="display:flex; column-gap: 1rem;">
         <form method="post" @onsubmit="Submit" @formname="starship-plain-form" id="myForm">
             <AntiforgeryToken />
@@ -35,18 +36,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="input-group" style="column-gap: 1rem; flex-wrap: nowrap;">
+                <div class="input-group">
                     <div class="mb-3">
-                        <InputDate @bind-Value="ActiveSettings!.date1" TValue="DateTime" Placeholder="Enter start Date" id="date1" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <InputDate @bind-Value="ActiveSettings!.date2" TValue="DateTime" Placeholder="Enter end Date" id="date2" class="form-control" />
+                        <label for="date">Data Since:</label>
+                        <InputDate @bind-Value="ActiveSettings!.date" TValue="DateTime" Placeholder="Enter start Date" id="date" class="form-control"/>
                     </div>
                 </div>
             </div>
             <div>
                 <button type="submit" id="submitButton">Refresh</button>
             </div>
+            <p>@ActiveSettings.daysSince days ago</p>
         </form>
     </section>
     @if (measurements == null)
@@ -75,22 +75,28 @@
         </tr>
         </thead>
         <tbody>
+        @{
+            double lastValue = measurements[0].Value ?? 0.0;
+        }
         @foreach (var measurement in measurements)
         {
-        <tr>
-            <td>@measurement.Timestamp</td>
-            <td>@measurement.LocationId</td>
-            <td>@measurement.Sensor</td>
-            <td>@measurement.Value</td>
-            <td>@measurement.Unit</td>
-            <td>@measurement.EnergyPrice</td>
-            <td>@measurement.Temperature</td>
-        </tr>
+            double currentAmount = (measurement.Value ?? lastValue) - lastValue;
+            lastValue = measurement.Value ?? lastValue;
+            <tr>
+                
+                <td>@getLocalTime(measurement.Timestamp)</td>
+                <td>@measurement.LocationId</td>
+                <td>@measurement.Sensor</td>
+                <td>@currentAmount</td>
+                <td>@measurement.Unit</td>
+                <td>@measurement.EnergyPrice</td>
+                <td>@measurement.Temperature</td>
+            </tr>
         }
         </tbody>
     </table>
     }
-</main>
+</article>
 <style>
     header {
         background-color: #005eff;
@@ -108,12 +114,18 @@
     {
         await FetchAndRenderData();
     }
+
+    public string getLocalTime(DateTime utcTimestamp)
+    {
+        // To check wether it was displaying UTC or nl 
+        return utcTimestamp.ToString(new CultureInfo("nl-nl"));
+    }
     
     private async Task FetchAndRenderData()
     {
         int meterId = ConvertHexToInt(ActiveSettings.machineIdentifier);
-        int numberOfDays = 3;
-        string aggregationWindow = "5m";
+        int numberOfDays = ActiveSettings.daysSince;
+        string aggregationWindow = "60m";
 
         measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggregationWindow);
         await RenderMyGraph();
@@ -140,7 +152,21 @@
         measurements = null;
         Logger.LogInformation("Id = {Id}", ActiveSettings?.machineIdentifier);
         Logger.LogInformation("Cost = {Cost}", ActiveSettings?.cost);
-        Logger.LogInformation("Date = {Date}", ActiveSettings?.date1);
+        Logger.LogInformation("Date = {Date}", ActiveSettings?.date);
+
+        int daysSince = (DateTime.Now.Date - ActiveSettings.date.Date).Days;
+        if (daysSince > 31)
+        {
+            daysSince = 31;
+            ActiveSettings.date = DateTime.Now.AddDays(-31);
+        }
+        else if (daysSince < 1) 
+        {
+            daysSince = 0;
+            ActiveSettings.date = DateTime.Now.AddDays(0);
+        }
+
+        ActiveSettings.daysSince = daysSince + 1;
 
         await FetchAndRenderData();
         await RenderMyGraph();
@@ -156,15 +182,15 @@
     {
         public string? machineIdentifier { get; set; }
         public double? cost { get; set; }
-        public DateTime date1 { get; set; }
-        public DateTime date2 { get; set; }
+        public DateTime date { get; set; }
+        public int daysSince { get; set; }
 
         public Settings()
         {
             machineIdentifier = "17E437";
             cost = 0.25;
-            date1 = DateTime.Now.AddDays(-7);
-            date2 = DateTime.Now;
+            date = DateTime.Now.AddDays(-7);
+            daysSince = 7;
         }
     }
     
