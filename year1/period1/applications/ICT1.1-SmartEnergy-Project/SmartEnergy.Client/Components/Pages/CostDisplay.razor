@@ -129,14 +129,25 @@
 
     private async Task convertMeassurements()
     {
+        double electricityOffset = measurements[0].Value ?? 0.0;
         double lastElectricityValue = measurements[0].Value ?? 0.0;
         double totalDynamicCost = 0.0;
         customMeasurements = [];
+        int currentDay = -1;
+        double electricityToday = 0.0;
+        double dynamicCostToday = 0.0;
         foreach (var measurement in measurements)
         {
+            if (measurement.Timestamp.DayOfYear != currentDay)
+            {
+                electricityToday = 0.0;
+                dynamicCostToday = 0.0;
+            }
             double hourlyEnergy = (double)measurement.Value - lastElectricityValue;
+            electricityToday += hourlyEnergy;
+            dynamicCostToday += hourlyEnergy * (double)measurement.EnergyPrice;
             totalDynamicCost += hourlyEnergy * (double)measurement.EnergyPrice;
-            customMeasurements.Add( new CustomMeasurement(measurement.Timestamp, (double)measurement.Value, hourlyEnergy, (double)measurement.EnergyPrice, totalDynamicCost));
+            customMeasurements.Add( new CustomMeasurement(measurement, electricityOffset, hourlyEnergy, totalDynamicCost, electricityToday, dynamicCostToday));
             lastElectricityValue = (double)measurement.Value;
         }
         
@@ -230,16 +241,20 @@
         public double hourlyEnergy { get; set; }
         public double hourlyCost { get; set; }
         public double totalCost  { get; set; }
+        public double electricityOffset { get; set; }
         public double totalEnergyToday { get; set; }
         public double totalCostToday  { get; set; }
 
-        public CustomMeasurement(DateTime date, double totalEnergy, double hourlyEnergy, double hourlyCost, double totalCost)
+        public CustomMeasurement(Measurement measurement, double electricityOffset, double hourlyEnergy, double totalCost, double electricityToday, double dynamicCostToday)
         {
-            this.date = date;
-            this.totalEnergy = totalEnergy;
+            this.date = measurement.Timestamp;
+            this.totalEnergy = (double)measurement.Value - electricityOffset;
             this.totalCost = totalCost;
             this.hourlyEnergy = hourlyEnergy;
-            this.hourlyCost = hourlyCost;
+            this.hourlyCost = (double)measurement.EnergyPrice;
+            this.totalEnergyToday = totalEnergyToday;
+            this.totalCostToday = dynamicCostToday;
+            this.electricityOffset = electricityOffset;
         }
 
         /*
@@ -250,6 +265,16 @@
         public double[] GetHourCost(double staticCost)
         {
             return new double[] { this.hourlyEnergy * this.hourlyCost, this.hourlyEnergy * staticCost };
+        }
+        
+        /*
+         * Get Cost of this day up to this hour
+         * 1st item is dynamic cost * energy
+         * 2nd item is static cost * energy
+         */
+        public double[] GetDayCost(double staticCostPerHour)
+        {
+            return new double[] { this.totalCostToday, this.totalEnergyToday * staticCostPerHour };
         }
 
         /*
