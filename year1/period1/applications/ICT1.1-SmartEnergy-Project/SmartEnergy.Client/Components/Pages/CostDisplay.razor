@@ -38,15 +38,18 @@
                 </div>
                 <div class="input-group">
                     <div class="mb-3">
-                        <label for="date">Data Since:</label>
                         <InputDate @bind-Value="ActiveSettings!.date" TValue="DateTime" Placeholder="Enter start Date" id="date" class="form-control"/>
                     </div>
+                    <div class="mb-3" style="margin-left: 0.5rem;">
+                        <InputDate @bind-Value="@today" TValue="DateTime" Placeholder="Enter end Date" disabled="true" id="dateNow" class="form-control"/>
+                    </div>
+                    <div class="mb-3" style="margin-left: 1.5rem;">
+                        <button type="submit" class="btn btn-primary" id="submitButton">Refresh</button>
+                    </div>
+                    
+                    
                 </div>
             </div>
-            <div>
-                <button type="submit" id="submitButton">Refresh</button>
-            </div>
-            <p>@ActiveSettings.daysSince days ago</p>
         </form>
     </section>
     @if (measurements == null)
@@ -108,7 +111,10 @@
     private Settings? ActiveSettings { get; set; }
     protected override void OnInitialized() => ActiveSettings ??= new();
     private List<Measurement>? measurements;
+    private List<CustomMeasurement> customMeasurements = [];
     private LineChart lineChart = default!;
+    private DateTime today = DateTime.Now;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -120,6 +126,21 @@
         // To check wether it was displaying UTC or nl 
         return utcTimestamp.ToString(new CultureInfo("nl-nl"));
     }
+
+    private async Task convertMeassurements()
+    {
+        double lastElectricityValue = measurements[0].Value ?? 0.0;
+        double totalDynamicCost = 0.0;
+        customMeasurements = [];
+        foreach (var measurement in measurements)
+        {
+            double hourlyEnergy = (double)measurement.Value - lastElectricityValue;
+            totalDynamicCost += hourlyEnergy * (double)measurement.EnergyPrice;
+            customMeasurements.Add( new CustomMeasurement(measurement.Timestamp, (double)measurement.Value, hourlyEnergy, (double)measurement.EnergyPrice, totalDynamicCost));
+            lastElectricityValue = (double)measurement.Value;
+        }
+        
+    }
     
     private async Task FetchAndRenderData()
     {
@@ -128,6 +149,10 @@
         string aggregationWindow = "60m";
 
         measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggregationWindow);
+        measurements.RemoveAt(measurements.Count -1);
+
+        await convertMeassurements();
+        // measurements.Reverse();
         await RenderMyGraph();
         StateHasChanged();
     }
@@ -154,7 +179,11 @@
         Logger.LogInformation("Cost = {Cost}", ActiveSettings?.cost);
         Logger.LogInformation("Date = {Date}", ActiveSettings?.date);
 
-        int daysSince = (DateTime.Now.Date - ActiveSettings.date.Date).Days;
+        if (ActiveSettings.date == null)
+        {
+            ActiveSettings.date = DateTime.Now.AddDays(-7);
+        }
+        int daysSince = (DateTime.Now.DayOfYear - ActiveSettings.date.DayOfYear);
         if (daysSince > 31)
         {
             daysSince = 31;
@@ -191,6 +220,46 @@
             cost = 0.25;
             date = DateTime.Now.AddDays(-7);
             daysSince = 7;
+        }
+    }
+
+    public class CustomMeasurement
+    {
+        public DateTime date { get; set; }
+        public double totalEnergy { get; set; }
+        public double hourlyEnergy { get; set; }
+        public double hourlyCost { get; set; }
+        public double totalCost  { get; set; }
+        public double totalEnergyToday { get; set; }
+        public double totalCostToday  { get; set; }
+
+        public CustomMeasurement(DateTime date, double totalEnergy, double hourlyEnergy, double hourlyCost, double totalCost)
+        {
+            this.date = date;
+            this.totalEnergy = totalEnergy;
+            this.totalCost = totalCost;
+            this.hourlyEnergy = hourlyEnergy;
+            this.hourlyCost = hourlyCost;
+        }
+
+        /*
+         * Get Cost of this hour
+         * 1st item is dynamic cost * energy
+         * 2nd item is static cost * energy
+         */
+        public double[] GetHourCost(double staticCost)
+        {
+            return new double[] { this.hourlyEnergy * this.hourlyCost, this.hourlyEnergy * staticCost };
+        }
+
+        /*
+         * Get Cost of all energy in this period up to this hour.
+         * 1st item is dynamic cost * energy
+         * 2nd item is static cost * energy
+         */
+        public double[] GetTotalCost(double staticCostPerHour)
+        {
+            return new double[] { this.totalCost, this.totalEnergy * staticCostPerHour };
         }
     }
     
