@@ -13,7 +13,7 @@
 
     <p>Dit is de beschrijving.</p>
 </header>
-<article>
+<div>
     <section style="display:flex; column-gap: 1rem;">
         <form method="post" @onsubmit="Submit" @formname="starship-plain-form" id="myForm">
             <AntiforgeryToken />
@@ -46,19 +46,58 @@
                     <div class="mb-3" style="margin-left: 1.5rem;">
                         <button type="submit" class="btn btn-primary" id="submitButton">Refresh</button>
                     </div>
-                    
-                    
                 </div>
             </div>
         </form>
     </section>
-    @if (measurements == null)
+
+    <hr class="solid">
+    @if (error)
+    {
+        <p><em>Deze meter bestaat niet...</em></p>
+    }
+    else if (measurements == null)
     {
         <p><em>Data wordt geladen...</em></p>
     }
     else
     {
-        <LineChart @ref="lineChart" Width="800" Height="300" />
+        <div class="d-flex flex-nowrap">
+            <div  class="order-1 p-2 col">
+                <LineChart @ref="lineChart" />
+            </div>
+            <div class="table order-2 p-2 col-sm" style="max-height: 400px; overflow-y: scroll">
+                <table style="width: 100%;">
+                    <thead>
+                    <tr>
+                        <th>Timestamp (UTC)</th>
+                        <th>Cost Dynamic</th>
+                        <th>Cost Static</th>
+                        <th>Energy Usage</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <td>Total</td>
+                    <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.cost)[0], 2)</td>
+                    <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.cost)[1], 2)</td>
+                    <td>@RoundWithDecimal(dailyMeasurements[0].totalEnergy, 2)KWH</td>
+                    @foreach (var measurement in dailyMeasurements)
+                    {
+
+                        <tr>
+
+                            <td>@measurement.date.ToString("dd-MM-yyyy")</td>
+                            <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.cost)[0], 2)</td>
+                            <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.cost)[1], 2)</td>
+                            <td>@RoundWithDecimal(measurement.totalEnergyToday, 2)KWH</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <hr class="solid">
     <!--
         When the measurements variable has values in it we will draw a table with a header (thead) and
         add the data to the table (tbody). We use the foreach to loop over te list of measurements and
@@ -83,7 +122,7 @@
 
             <tr>
                 
-                <td>@getLocalTime(measurement.date)</td>
+                <td>@measurement.date</td>
                 <td>@measurement.GetHourCost((double)ActiveSettings.cost)[0]</td>
                 <td>@measurement.GetDayCost((double)ActiveSettings.cost)[0]</td>
                 <td>@measurement.GetTotalCost((double)ActiveSettings.cost)[0]</td>
@@ -95,7 +134,7 @@
         </tbody>
     </table>
     }
-</article>
+</div>
 <style>
     header {
         background-color: #005eff;
@@ -107,20 +146,21 @@
     private Settings? ActiveSettings { get; set; }
     protected override void OnInitialized() => ActiveSettings ??= new();
     private List<Measurement>? measurements;
+    private bool error = false;
     private List<CustomMeasurement> customMeasurements = [];
+    private List<CustomMeasurement> dailyMeasurements = [];
     private LineChart lineChart = default!;
     private DateTime today = DateTime.Now;
+
+    public double RoundWithDecimal(double value, int amountOfDecimals)
+    {
+        return Math.Round(value, amountOfDecimals);
+    }
 
 
     protected override async Task OnInitializedAsync()
     {
         await FetchAndRenderData();
-    }
-
-    public string getLocalTime(DateTime utcTimestamp)
-    {
-        // To check wether it was displaying UTC or nl 
-        return utcTimestamp.ToString(new CultureInfo("nl-nl"));
     }
 
     private async Task convertMeassurements()
@@ -132,12 +172,18 @@
         int currentDay = -1;
         double electricityToday = 0.0;
         double dynamicCostToday = 0.0;
+        dailyMeasurements = [];
         foreach (var measurement in measurements)
         {
             if (measurement.Timestamp.DayOfYear != currentDay)
             {
+                if (currentDay != -1)
+                {
+                    dailyMeasurements.Add(customMeasurements[customMeasurements.Count -1]);
+                }
                 electricityToday = 0.0;
                 dynamicCostToday = 0.0;
+                currentDay = measurement.Timestamp.DayOfYear;
             }
             double hourlyEnergy = (double)measurement.Value - lastElectricityValue;
             electricityToday += hourlyEnergy;
@@ -146,7 +192,11 @@
             customMeasurements.Add( new CustomMeasurement(measurement, electricityOffset, hourlyEnergy, totalDynamicCost, electricityToday, dynamicCostToday));
             lastElectricityValue = (double)measurement.Value;
         }
-        
+        dailyMeasurements.Add(customMeasurements[customMeasurements.Count -1]);
+        dailyMeasurements.Reverse();
+        customMeasurements.RemoveAt(0);
+        customMeasurements.Reverse();
+
     }
     
     private async Task FetchAndRenderData()
@@ -156,6 +206,13 @@
         string aggregationWindow = "60m";
 
         measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggregationWindow);
+        if (measurements.Count < 1)
+        {
+            error = true;
+            return;
+        }
+        error = false;
+        
         measurements.RemoveAt(measurements.Count -1);
 
         await convertMeassurements();
@@ -176,7 +233,15 @@
 
     private int ConvertHexToInt(string hexString)
     {
-        return (int)Convert.ToUInt32(hexString, 16);
+        try
+        {
+            return (int)Convert.ToUInt32(hexString, 16);
+        }
+        catch (Exception e)
+        {
+            error = true;
+            return 0;
+        }
     }
 
     private async Task Submit()
@@ -201,6 +266,17 @@
             daysSince = 0;
             ActiveSettings.date = DateTime.Now.AddDays(0);
         }
+
+        if (ActiveSettings.cost == null)
+        {
+            ActiveSettings.cost = 0.25;
+        }
+
+        if (ActiveSettings.machineIdentifier == null)
+        {
+            ActiveSettings.machineIdentifier = "17E437";
+        }
+        
 
         ActiveSettings.daysSince = daysSince + 1;
 
