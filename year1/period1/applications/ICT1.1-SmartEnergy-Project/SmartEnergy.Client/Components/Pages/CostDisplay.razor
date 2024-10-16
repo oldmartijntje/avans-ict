@@ -23,7 +23,7 @@
     </div>
 </header>
 <div id="mainContent">
-    <section style="display:flex; column-gap: 1rem;">
+    <section style="display:flex; column-gap: 1rem;" id="settingsSelector">
         <form method="post" @onsubmit="Submit" @formname="starship-plain-form" id="myForm">
             <AntiforgeryToken />
             <div style="row-gap: 1rem; flex-wrap: wrap; flex-direction: column;">
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <label for="cost">Cost per KWH:</label>
+                        <label for="cost">Static costs per KWH:</label>
                         <div class="mb-3 input-group">
                             <span class="input-group-text">€</span>
                             <InputNumber @bind-Value="ActiveSettings!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
@@ -61,96 +61,105 @@
     </section>
 
     <hr class="solid">
-    @if (error)
-    {
-        <p><em>Deze meter bestaat niet...</em></p>
-    }
-    else if (measurements == null)
-    {
-        <p><em>Data wordt geladen...</em></p>
-    }
-    else
-    {
-        <div class="d-flex flex-nowrap">
-            <div  class="order-1 p-2 col">
-                <LineChart @ref="lineChart" />
-            </div>
-            <div class="table order-2 p-2 col-sm" style="max-height: 400px; overflow-y: scroll">
-                <table style="width: 100%;">
-                    <thead>
-                    <tr>
-                        <th>Timestamp (UTC)</th>
-                        <th>Cost Dynamic</th>
-                        <th>Cost Static</th>
-                        <th>Energy Usage</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <td>Total</td>
-                    <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.cost)[0], 2)</td>
-                    <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.cost)[1], 2)</td>
-                    <td>@RoundWithDecimal(dailyMeasurements[0].totalEnergy, 2)KWH</td>
-                    @foreach (var measurement in dailyMeasurements)
-                    {
-
-                        <tr>
-
-                            <td>@measurement.date.ToString("dd-MM-yyyy")</td>
-                            <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.cost)[0], 2)</td>
-                            <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.cost)[1], 2)</td>
-                            <td>@RoundWithDecimal(measurement.totalEnergyToday, 2)KWH</td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <hr class="solid">
-    <!--
-        When the measurements variable has values in it we will draw a table with a header (thead) and
-        add the data to the table (tbody). We use the foreach to loop over te list of measurements and
-        a single line <tr> is added for each of the indivudial measurement objects. Colums are seperated
-        using <th> for the header or <td> for the body as you can see in the code below.
-    -->
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Timestamp (UTC)</th>
-            <th>GetHourCost Dynamic</th>
-            <th>GetDayCost Dynamic</th>
-            <th>GetTotalCost Dynamic</th>
-            <th>GetHourCost Static</th>
-            <th>GetDayCost Static</th>
-            <th>GetTotalCost Static</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var measurement in customMeasurements)
+    <section id="pageContent">
+        @if (error)
         {
-
-            <tr>
-                
-                <td>@measurement.date</td>
-                <td>@measurement.GetHourCost((double)ActiveSettings.cost)[0]</td>
-                <td>@measurement.GetDayCost((double)ActiveSettings.cost)[0]</td>
-                <td>@measurement.GetTotalCost((double)ActiveSettings.cost)[0]</td>
-                <td>@measurement.GetHourCost((double)ActiveSettings.cost)[1]</td>
-                <td>@measurement.GetDayCost((double)ActiveSettings.cost)[1]</td>
-                <td>@measurement.GetTotalCost((double)ActiveSettings.cost)[1]</td>
-            </tr>
+            <p><em>404, Meter doesn't exist...</em></p>
         }
-        </tbody>
-    </table>
-    }
+        else if (measurements == null)
+        {
+            <p><em>Loading data...</em></p>
+        }
+        else
+        {
+            <div class="d-flex flex-nowrap">
+                <div  class="order-1 p-2 col">
+                    <LineChart @ref="lineChart" />
+                </div>
+                <div class="table order-2 p-2 col-sm" style="max-height: 400px; overflow-y: scroll">
+                    <table style="width: 100%;">
+                        <thead>
+                        <tr>
+                            <th>Timestamp (UTC)</th>
+                            <th>Cost Dynamic</th>
+                            <th>Cost Static</th>
+                            <th>Energy Usage</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <td>Total</td>
+                        <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.cost)[0], 2)</td>
+                        <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.cost)[1], 2)</td>
+                        <td>@RoundWithDecimal(dailyMeasurements[0].totalEnergy, 2)KWH</td>
+                        @foreach (var measurement in dailyMeasurements)
+                        {
+
+                            <tr>
+
+                                <td>@measurement.date.ToString("dd-MM-yyyy")</td>
+                                <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.cost)[0], 2)</td>
+                                <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.cost)[1], 2)</td>
+                                <td>@RoundWithDecimal(measurement.totalEnergyToday, 2)KWH</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <hr class="solid">
+        <!--
+            When the measurements variable has values in it we will draw a table with a header (thead) and
+            add the data to the table (tbody). We use the foreach to loop over te list of measurements and
+            a single line <tr> is added for each of the indivudial measurement objects. Colums are seperated
+            using <th> for the header or <td> for the body as you can see in the code below.
+        -->
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Timestamp (UTC)</th>
+                <th>GetHourCost Dynamic</th>
+                <th>GetDayCost Dynamic</th>
+                <th>GetTotalCost Dynamic</th>
+                <th>GetHourCost Static</th>
+                <th>GetDayCost Static</th>
+                <th>GetTotalCost Static</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var measurement in customMeasurements)
+            {
+
+                <tr>
+                    
+                    <td>@measurement.date</td>
+                    <td>@measurement.GetHourCost((double)ActiveSettings.cost)[0]</td>
+                    <td>@measurement.GetDayCost((double)ActiveSettings.cost)[0]</td>
+                    <td>@measurement.GetTotalCost((double)ActiveSettings.cost)[0]</td>
+                    <td>@measurement.GetHourCost((double)ActiveSettings.cost)[1]</td>
+                    <td>@measurement.GetDayCost((double)ActiveSettings.cost)[1]</td>
+                    <td>@measurement.GetTotalCost((double)ActiveSettings.cost)[1]</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        }
+    </section>
 </div>
 <style>
     header {
         background-color: #f1efe4;
         color: #000000;
+        margin-bottom: 1rem;
+        padding: 1rem;
     }
     header div * {
         margin: 0;
+    }
+    
+    #settingsSelector,
+    #pageContent {
+        padding: 1rem;
     }
 </style>
 
