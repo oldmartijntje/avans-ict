@@ -137,6 +137,7 @@ h1:focus {
 /* Nav bars (outer edge) */
 .costVisualizerNavbar{
     background-color: var(--background-color-primary);
+    z-index: 10 !important;
 }
 
 .costVisualizerPage {
