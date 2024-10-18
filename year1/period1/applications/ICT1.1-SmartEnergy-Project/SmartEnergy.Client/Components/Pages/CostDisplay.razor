@@ -89,8 +89,8 @@
                         <tbody>
                         <tr>
                         <td>Total</td>
-                        <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.cost)[0], 2)</td>
-                        <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.cost)[1], 2)</td>
+                        <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.GetCost())[0], 2)</td>
+                        <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.GetCost())[1], 2)</td>
                         <td>@RoundWithDecimal(dailyMeasurements[0].totalEnergy, 2)KWH</td>
                         </tr>
                         @foreach (var measurement in dailyMeasurements)
@@ -99,8 +99,8 @@
                             <tr>
 
                                 <td>@measurement.date.ToString("dd-MM-yyyy")</td>
-                                <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.cost)[0], 2)</td>
-                                <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.cost)[1], 2)</td>
+                                <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.GetCost())[0], 2)</td>
+                                <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.GetCost())[1], 2)</td>
                                 <td>@RoundWithDecimal(measurement.totalEnergyToday, 2)KWH</td>
                             </tr>
                         }
@@ -135,12 +135,12 @@
                 <tr>
                     
                     <td>@measurement.date</td>
-                    <td>@measurement.GetHourCost((double)ActiveSettings.cost)[0]</td>
-                    <td>@measurement.GetDayCost((double)ActiveSettings.cost)[0]</td>
-                    <td>@measurement.GetTotalCost((double)ActiveSettings.cost)[0]</td>
-                    <td>@measurement.GetHourCost((double)ActiveSettings.cost)[1]</td>
-                    <td>@measurement.GetDayCost((double)ActiveSettings.cost)[1]</td>
-                    <td>@measurement.GetTotalCost((double)ActiveSettings.cost)[1]</td>
+                    <td>@measurement.GetHourCost((double)ActiveSettings.GetCost())[0]</td>
+                    <td>@measurement.GetDayCost((double)ActiveSettings.GetCost())[0]</td>
+                    <td>@measurement.GetTotalCost((double)ActiveSettings.GetCost())[0]</td>
+                    <td>@measurement.GetHourCost((double)ActiveSettings.GetCost())[1]</td>
+                    <td>@measurement.GetDayCost((double)ActiveSettings.GetCost())[1]</td>
+                    <td>@measurement.GetTotalCost((double)ActiveSettings.GetCost())[1]</td>
                 </tr>
             }
             </tbody>
@@ -311,6 +311,11 @@
             cost = 0.25;
             date = DateTime.Now.AddDays(-7);
             daysSince = 7;
+        }
+
+        public double GetCost()
+        {
+            return this.cost != null ? (double)this.cost : 0.25;
         }
     }
 
