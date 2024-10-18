@@ -124,3 +124,76 @@ h1:focus {
     height: 25em;
 }
 
+/*Cost Vizualizer css*/
+
+/* Variables*/
+:root, .costVisualizerPage {
+    --background-color-primary: #2b509b; /*navbar*/
+    --background-color-secondary: #e8e5e1; /*main page*/
+    --background-color-tertiary: #d0d0d0; 
+    --text-color: #000000; /*text*/
+}
+
+/* Nav bars (outer edge) */
+.costVisualizerNavbar{
+    background-color: var(--background-color-primary);
+}
+
+.costVisualizerPage {
+    
+    padding: 1em;
+    background-color: var(--background-color-secondary);
+    height: fit-content;
+    min-height: 100%;
+    padding: 0 !important;
+    
+    .anti-padding {
+        margin-left: -2rem;
+        margin-right: -1.5rem;
+    }
+    
+    header {
+        background-color: var(--background-color-secondary);
+        color: var(--text-color);
+        margin-bottom: 1rem;
+        padding: 1rem;
+        filter: brightness(90%);
+    }
+    header div * {
+        margin: 0;
+    }
+    
+    .custom-table {
+        border: 1px solid var(--text-color);
+        background-color: var(--background-color-tertiary);
+        --bs-table-bg: var(--background-color-tertiary);
+        thead tr,
+        tr:nth-child(even) {
+            --bs-table-bg: var(--background-color-secondary);
+            background-color: var(--background-color-secondary);
+        }
+    }
+
+    #settingsSelector,
+    #pageContent {
+        padding: 1rem;
+    }
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    a,
+    ul,
+    ol,
+    li,
+    .input-group-text,
+    .form-control
+    {
+        color:  var(--text-color);
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+}

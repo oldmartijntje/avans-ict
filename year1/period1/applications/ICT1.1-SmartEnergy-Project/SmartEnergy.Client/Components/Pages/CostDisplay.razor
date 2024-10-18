@@ -8,7 +8,7 @@
 <PageTitle>CostDisplay</PageTitle>
 
 @* https://demos.blazorbootstrap.com/form/date-input *@
-<header>
+<header class="anti-padding">
     <h1>Martijn van Houwelingen.</h1>
 
     <div>
@@ -60,7 +60,7 @@
         </form>
     </section>
 
-    <hr class="solid">
+    <hr class="solid anti-padding">
     <section id="pageContent">
         @if (error)
         {
@@ -77,7 +77,7 @@
                     <LineChart @ref="lineChart" />
                 </div>
                 <div class="table order-2 p-2 col-sm" style="max-height: 400px; overflow-y: scroll">
-                    <table style="width: 100%;">
+                    <table style="width: 100%;" class="custom-table">
                         <thead>
                         <tr>
                             <th>Timestamp (UTC)</th>
@@ -87,10 +87,12 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr>
                         <td>Total</td>
                         <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.cost)[0], 2)</td>
                         <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.cost)[1], 2)</td>
                         <td>@RoundWithDecimal(dailyMeasurements[0].totalEnergy, 2)KWH</td>
+                        </tr>
                         @foreach (var measurement in dailyMeasurements)
                         {
 
@@ -114,7 +116,7 @@
             a single line <tr> is added for each of the indivudial measurement objects. Colums are seperated
             using <th> for the header or <td> for the body as you can see in the code below.
         -->
-        <table class="table">
+        <table class="table custom-table">
             <thead>
             <tr>
                 <th>Timestamp (UTC)</th>
@@ -146,22 +148,6 @@
         }
     </section>
 </div>
-<style>
-    header {
-        background-color: #f1efe4;
-        color: #000000;
-        margin-bottom: 1rem;
-        padding: 1rem;
-    }
-    header div * {
-        margin: 0;
-    }
-    
-    #settingsSelector,
-    #pageContent {
-        padding: 1rem;
-    }
-</style>
 
 @code {
     [SupplyParameterFromForm]
@@ -438,3 +424,21 @@
         // StateHasChanged();
     }
 }
+<script> 
+    // This piece of code is made by Thomas, so that we wouldn't have clashing styling once we merge our pages together.
+    //Dynamically changes the full article box to the right styling to not mess with other pages
+    var articlebox = document.getElementById("mainArticle");
+    articlebox.classList.add("costVisualizerPage");
+
+    //Same with navbar (twice cuz funky naming)
+    var navbars = document.getElementsByClassName("nav-scrollable");
+    for (let i = 0; i < navbars.length; i++) 
+    {
+        navbars[i].classList.add("costVisualizerNavbar");           
+    }
+    var navbars = document.getElementsByClassName("top-row");
+    for (let i = 0; i < navbars.length; i++)
+    {
+        navbars[i].classList.add("costVisualizerNavbar");
+    }   
+</script>
