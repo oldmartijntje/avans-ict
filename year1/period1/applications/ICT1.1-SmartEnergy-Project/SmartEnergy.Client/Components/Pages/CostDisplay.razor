@@ -371,10 +371,32 @@
         {
             return new double[] { this.totalCost, this.totalEnergy * staticCostPerHour };
         }
+
+        /*
+         * Get Cost of all energy in this period up to this hour since previous timestamp.
+         * 1st item is dynamic cost * energy
+         * 2nd item is static cost * energy
+         *
+         * If given timestamp is later, will result in negative costs.
+         */
+        public double[] GetCostSince(double staticCostPerHour, CustomMeasurement timestamp)
+        {
+            return new double[] { this.totalCost - timestamp.totalCost, (this.totalEnergy - timestamp.totalEnergy) * staticCostPerHour };
+        }
+        
+        /*
+         * Get energy usage since previous timestamp.
+         * If given timestamp is later, will result in negative return value.
+         */
+        public double GetEnergySince(CustomMeasurement timestamp)
+        {
+            return this.totalEnergy - timestamp.totalEnergy;
+        }
     }
     
     private async Task RenderWormAsync()
     {
+        bool daily = true;
         var data = new ChartData
             {
                 Labels = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" },
@@ -413,14 +435,14 @@
 
         options.Interaction.Mode = InteractionMode.Index;
 
-        options.Plugins.Title!.Text = "WORM";
+        options.Plugins.Title!.Text = $"2019-ETI-EMON-V01-{ActiveSettings.machineIdentifier}-16405E";
         options.Plugins.Title.Display = true;
         options.Plugins.Title.Font = new ChartFont { Size = 20 };
 
         options.Responsive = true;
 
-        options.Scales.X!.Title = new ChartAxesTitle { Text = "Overs", Display = true };
-        options.Scales.Y!.Title = new ChartAxesTitle { Text = "Runs", Display = true };
+        options.Scales.X!.Title = new ChartAxesTitle { Text = daily ? "Days" : "Hours", Display = true };
+        options.Scales.Y!.Title = new ChartAxesTitle { Text = "Cost in Euros", Display = true };
 
         if (lineChart != null)
         {
