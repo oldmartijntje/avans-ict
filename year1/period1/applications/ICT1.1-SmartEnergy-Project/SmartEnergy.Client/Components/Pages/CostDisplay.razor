@@ -41,7 +41,7 @@
                         <label for="cost">Static costs per KWH:</label>
                         <div class="mb-3 input-group">
                             <span class="input-group-text">€</span>
-                            <InputNumber @bind-Value="ActiveSettings!.cost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
+                            <InputNumber @bind-Value="tempCost" class="form-control" placeholder="Value per hour"  id="cost" step="0.01" />
                         </div>
                     </div>
                 </div>
@@ -81,27 +81,26 @@
                         <thead>
                         <tr>
                             <th>Timestamp (UTC)</th>
-                            <th>Cost Dynamic</th>
-                            <th>Cost Static</th>
                             <th>Energy Usage</th>
+                            <th>€@ActiveSettings.GetCost() * KWH</th>
+                            <th>Cost Dynamic</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                         <td>Total</td>
-                        <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.GetCost())[0], 2)</td>
-                        <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.GetCost())[1], 2)</td>
                         <td>@RoundWithDecimal(dailyMeasurements[0].totalEnergy, 2)KWH</td>
+                        <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.GetCost())[1], 2)</td>
+                        <td>€@RoundWithDecimal(dailyMeasurements[0].GetTotalCost((double)ActiveSettings.GetCost())[0], 2)</td>
                         </tr>
                         @foreach (var measurement in dailyMeasurements)
                         {
 
                             <tr>
-
                                 <td>@measurement.date.ToString("dd-MM-yyyy")</td>
-                                <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.GetCost())[0], 2)</td>
-                                <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.GetCost())[1], 2)</td>
                                 <td>@RoundWithDecimal(measurement.totalEnergyToday, 2)KWH</td>
+                                <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.GetCost())[1], 2)</td>
+                                <td>€@RoundWithDecimal(measurement.GetDayCost((double)ActiveSettings.GetCost())[0], 2)</td>
                             </tr>
                         }
                         </tbody>
@@ -110,37 +109,33 @@
             </div>
             
             <hr class="solid">
-        <!--
+            <!--
             When the measurements variable has values in it we will draw a table with a header (thead) and
             add the data to the table (tbody). We use the foreach to loop over te list of measurements and
             a single line <tr> is added for each of the indivudial measurement objects. Colums are seperated
             using <th> for the header or <td> for the body as you can see in the code below.
         -->
-        <table class="table custom-table">
+            <h1>Detailed Overview</h1>
+            <p>In this table you can view your energy usage and cost per hour.</p>
+        <table class="custom-table" style="width: 60%">
             <thead>
             <tr>
                 <th>Timestamp (UTC)</th>
-                <th>GetHourCost Dynamic</th>
-                <th>GetDayCost Dynamic</th>
-                <th>GetTotalCost Dynamic</th>
-                <th>GetHourCost Static</th>
-                <th>GetDayCost Static</th>
-                <th>GetTotalCost Static</th>
+                <th>Energy Usage</th>
+                <th>€@ActiveSettings.GetCost() * KWH</th>
+                <th>Dynamic Cost</th>
+                <th>Dynamic price for 1KWH</th>
             </tr>
             </thead>
             <tbody>
             @foreach (var measurement in customMeasurements)
             {
-
                 <tr>
-                    
                     <td>@measurement.date</td>
-                    <td>@measurement.GetHourCost((double)ActiveSettings.GetCost())[0]</td>
-                    <td>@measurement.GetDayCost((double)ActiveSettings.GetCost())[0]</td>
-                    <td>@measurement.GetTotalCost((double)ActiveSettings.GetCost())[0]</td>
-                    <td>@measurement.GetHourCost((double)ActiveSettings.GetCost())[1]</td>
-                    <td>@measurement.GetDayCost((double)ActiveSettings.GetCost())[1]</td>
-                    <td>@measurement.GetTotalCost((double)ActiveSettings.GetCost())[1]</td>
+                    <td>@RoundWithDecimal(measurement.hourlyEnergy, 2)KWH</td>
+                    <td>€@RoundWithDecimal(measurement.GetHourCost((double)ActiveSettings.GetCost())[1],2)</td>
+                    <td>€@RoundWithDecimal(measurement.GetHourCost((double)ActiveSettings.GetCost())[0],2)</td>
+                    <td>€@RoundWithDecimal(measurement.hourlyCost,2)</td>
                 </tr>
             }
             </tbody>
@@ -159,6 +154,7 @@
     private List<CustomMeasurement> dailyMeasurements = [];
     private LineChart lineChart = default!;
     private DateTime today = DateTime.Now;
+    private double? tempCost = 0.25;
 
     public double RoundWithDecimal(double value, int amountOfDecimals)
     {
@@ -258,6 +254,8 @@
         Logger.LogInformation("Id = {Id}", ActiveSettings?.machineIdentifier);
         Logger.LogInformation("Cost = {Cost}", ActiveSettings?.cost);
         Logger.LogInformation("Date = {Date}", ActiveSettings?.date);
+        
+        ActiveSettings.cost = tempCost;
 
         if (ActiveSettings.date == null)
         {
@@ -396,18 +394,32 @@
     
     private async Task RenderWormAsync()
     {
-        bool daily = true;
+        List<CustomMeasurement> usedMeasurements = dailyMeasurements.Count > 4 ? dailyMeasurements : customMeasurements;
+        
+        List<string> graphLabels = [];
+        List<double?> dynamicCosts = [];
+        List<double?> staticCosts = [];
+        foreach(CustomMeasurement measurement in usedMeasurements) {
+            graphLabels.Add(measurement.date.ToString("dd-MM-yyyy HH:mm"));
+            double[] costs = dailyMeasurements.Count > 4 ? measurement.GetDayCost(ActiveSettings.GetCost()) : measurement.GetHourCost(ActiveSettings.GetCost());
+            dynamicCosts.Add(costs[0]);
+            staticCosts.Add(costs[1]);
+        }
+
+        graphLabels.Reverse();
+        dynamicCosts.Reverse();
+        staticCosts.Reverse();
         var data = new ChartData
             {
-                Labels = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" },
+                Labels = graphLabels,
                 Datasets = new List<IChartDataset>()
                 {
                     new LineChartDataset()
                     {
-                        Label = "India",
-                        Data = new List<double?>{ 9, 20, 29, 33, 50, 66, 75, 86, 91, 105, 120, 126, 141, 150, 156, 164, 177, 180, 184, 195 },
-                        BackgroundColor = "rgb(88, 80, 141)",
-                        BorderColor = "rgb(88, 80, 141)",
+                        Label = "Dynamic Price",
+                        Data = dynamicCosts,
+                        BackgroundColor = "rgb(255, 166, 0)",
+                        BorderColor = "rgb(255, 166, 0)",
                         BorderWidth = 2,
                         HoverBorderWidth = 4,
                         //PointBackgroundColor = "rgb(88, 80, 141)",
@@ -417,10 +429,10 @@
                     },
                     new LineChartDataset()
                     {
-                        Label = "England",
-                        Data = new List<double?>{ 1, 1, 8, 19, 24, 26, 39, 47, 56, 66, 75, 88, 95, 100, 109, 114, 124, 129, 140, 142 },
-                        BackgroundColor = "rgb(255, 166, 0)",
-                        BorderColor = "rgb(255, 166, 0)",
+                        Label = $"\u20ac{ActiveSettings.GetCost()} * KWH",
+                        Data = staticCosts,
+                        BackgroundColor = "rgb(88, 80, 141)",
+                        BorderColor = "rgb(88, 80, 141)",
                         BorderWidth = 2,
                         HoverBorderWidth = 4,
                         // PointBackgroundColor = "rgb(255, 166, 0)",
@@ -441,7 +453,7 @@
 
         options.Responsive = true;
 
-        options.Scales.X!.Title = new ChartAxesTitle { Text = daily ? "Days" : "Hours", Display = true };
+        options.Scales.X!.Title = new ChartAxesTitle { Text = dailyMeasurements.Count > 4 ? "Days" : "Hours", Display = true };
         options.Scales.Y!.Title = new ChartAxesTitle { Text = "Cost in Euros", Display = true };
 
         if (lineChart != null)

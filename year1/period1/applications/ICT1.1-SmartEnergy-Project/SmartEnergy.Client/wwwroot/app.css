@@ -164,6 +164,16 @@ h1:focus {
         margin: 0;
     }
     
+    .table-spacing {
+        /*border-spacing: 1rem 0;*/
+        /*border-collapse: separate;*/
+        
+        /*th,*/
+        /*td {*/
+        /*    margin: 0 -1rem;*/
+        /*}*/
+    }
+    
     .custom-table {
         border: 1px solid var(--text-color);
         background-color: var(--background-color-tertiary);
