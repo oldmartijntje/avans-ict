@@ -12,7 +12,6 @@ public static class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        builder.Services.AddBlazorBootstrap();
         builder.Services
             .AddSingleton<IInfluxDBClient, InfluxDBClient>(o =>
             {
@@ -27,6 +26,7 @@ public static class Program
             .AddTransient<IMeasurementRepository, InfluxMeasurementRepository>()
             .AddRazorComponents()
             .AddInteractiveServerComponents();
+        builder.Services.AddBlazorBootstrap();
 
         var app = builder.Build();
 
