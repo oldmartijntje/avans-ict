@@ -27,7 +27,7 @@ h1:focus {
 .navbar-dark,
 .nav-scrollable,
 .top-row {
-    background-color: rgb(78, 0, 0);
+    background-color: red;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -55,3 +55,72 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+/*Peak vizualizer css*/
+
+/* Variables*/
+:root, .peakVisualizerPage {
+    --background-color-primary: #181C14; /*navbar*/
+    --background-color-secondary: #3C3D37; /*main page*/
+    --text-color: #ECDFCC; /*text*/
+}
+/* Main page */
+.peakVisualizerPage{
+    padding: 1em;
+    background-color: var(--background-color-secondary);
+    height: 100%;
+}
+
+/* Every input field */
+.peakVisualizerPage .input-group-text,
+.peakVisualizerPage .form-control,
+.peakVisualizerPage .custom-select {
+    background-color: var(--background-color-primary);
+}
+
+/* Every piece of text */
+.peakVisualizerPage p,
+.peakVisualizerPage h1,
+.peakVisualizerPage h2,
+.peakVisualizerPage h3, 
+.peakVisualizerPage h4, 
+.peakVisualizerPage h5, 
+.peakVisualizerPage h6, 
+.peakVisualizerPage a, 
+.peakVisualizerPage ul, 
+.peakVisualizerPage ol, 
+.peakVisualizerPage li,
+.peakVisualizerPage .input-group-text,
+.peakVisualizerPage .form-control,
+.peakVisualizerPage .custom-select
+{
+    color:  var(--text-color);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Every table */
+.peakVisualizerPage .custom-table,
+.peakVisualizerPage .custom-table th,
+.peakVisualizerPage .custom-table tr,
+.peakVisualizerPage .custom-table td
+{
+    color:  var(--text-color);
+    background-color: var(--background-color-primary);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Table and barchart sizing */
+.peakVisualizerPage #propertiesRightDiv {
+    overflow-y: scroll;
+}
+
+/* Nav bars (outer edge) */
+.peakDarkNavBar{
+    background-color: var(--background-color-primary);
+}
+
+/* The properties */
+.peakVisualizerPage #propertiesDiv {
+    height: 25em;
+}
+
