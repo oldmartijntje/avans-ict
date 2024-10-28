@@ -66,7 +66,7 @@
 
     <hr class="solid anti-padding">
     <section id="pageContent">
-        @if (error)
+        @if (displayError)
         {
             <p><em>404, Meter doesn't exist...</em></p>
         }
@@ -76,7 +76,7 @@
         }
         else
         {
-            <div class="d-flex flex-nowrap">
+            <div class="d-flex flex-wrap">
                 <div class="order-1 p-2 col">
                     <LineChart @ref="lineChart" />
                 </div>
@@ -116,11 +116,11 @@
 
             <hr class="solid">
             <!--
-                When the measurements variable has values in it we will draw a table with a header (thead) and
-                add the data to the table (tbody). We use the foreach to loop over te list of measurements and
-                a single line <tr> is added for each of the indivudial measurement objects. Colums are seperated
-                using <th> for the header or <td> for the body as you can see in the code below.
-            -->
+                                                                                                When the measurements variable has values in it we will draw a table with a header (thead) and
+                                                                                                add the data to the table (tbody). We use the foreach to loop over te list of measurements and
+                                                                                                a single line <tr> is added for each of the indivudial measurement objects. Colums are seperated
+                                                                                                using <th> for the header or <td> for the body as you can see in the code below.
+                                                                                            -->
             <h1>Detailed Overview</h1>
             <p>In this table you can view your energy usage and cost per hour.</p>
             <table class="custom-table" style="width: 60%">
@@ -155,7 +155,7 @@
     private Settings? ActiveSettings { get; set; }
     protected override void OnInitialized() => ActiveSettings ??= new();
     private List<Measurement>? measurements;
-    private bool error = false;
+    private bool displayError = false;
     private List<CustomMeasurement> customMeasurements = [];
     private List<CustomMeasurement> dailyMeasurements = [];
     private LineChart lineChart = default!;
@@ -173,6 +173,11 @@
         await FetchAndRenderData();
     }
 
+
+    /**
+    * Converts default measurements to custom measurements.
+    * This is done to make the data calculations easier.
+*/
     private async Task convertMeassurements()
     {
         double electricityOffset = measurements[0].Value ?? 0.0;
@@ -219,15 +224,14 @@
         measurements = await this.measurementRepository.GetEnergyConsumed(meterId, numberOfDays, aggregationWindow);
         if (measurements.Count < 1)
         {
-            error = true;
+            displayError = true;
             return;
         }
-        error = false;
+        displayError = false;
 
         measurements.RemoveAt(measurements.Count - 1);
 
         await convertMeassurements();
-        // measurements.Reverse();
         await RenderMyGraph();
         StateHasChanged();
     }
@@ -235,6 +239,8 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // this is a function that is called after the first render of the page.
+        // otherwise the graph will cause errors.
         if (!firstRender)
         {
             await RenderMyGraph();
@@ -250,7 +256,7 @@
         }
         catch (Exception e)
         {
-            error = true;
+            displayError = true;
             return 0;
         }
     }
@@ -258,9 +264,6 @@
     private async Task Submit()
     {
         measurements = null;
-        Logger.LogInformation("Id = {Id}", ActiveSettings?.machineIdentifier);
-        Logger.LogInformation("Cost = {Cost}", ActiveSettings?.cost);
-        Logger.LogInformation("Date = {Date}", ActiveSettings?.date);
 
         ActiveSettings.cost = tempCost;
 
@@ -300,11 +303,14 @@
 
     public async Task RenderMyGraph()
     {
-        await RenderWormAsync();
+        // this is it's own function because it would make it possible to easily extend functionality.
+        await RenderGraphAsync();
     }
 
     public class Settings
     {
+        // this is a class because it was easier with setting values.
+        // this also keeps them together and makes it easier to pass around.
         public string? machineIdentifier { get; set; }
         public double? cost { get; set; }
         public DateTime date { get; set; }
@@ -324,6 +330,9 @@
         }
     }
 
+    /**
+    * A custom class made to make the data calculations easier.
+*/
     public class CustomMeasurement
     {
         public DateTime date { get; set; }
@@ -401,7 +410,7 @@ staticCostPerHour };
         }
     }
 
-    private async Task RenderWormAsync()
+    private async Task RenderGraphAsync()
     {
         List<CustomMeasurement> usedMeasurements = dailyMeasurements.Count > 4 ? dailyMeasurements : customMeasurements;
 
@@ -410,6 +419,7 @@ staticCostPerHour };
         List<double?> staticCosts = [];
         foreach (CustomMeasurement measurement in usedMeasurements)
         {
+            // render a label for the graph, 1 per day / hour (depends on days selected)
             graphLabels.Add(measurement.date.ToString("dd-MM-yyyy HH:mm"));
             double[] costs = dailyMeasurements.Count > 4 ? measurement.GetDayCost(ActiveSettings.GetCost()) :
             measurement.GetHourCost(ActiveSettings.GetCost());
@@ -433,10 +443,6 @@ BackgroundColor = "rgb(255, 166, 0)",
 BorderColor = "rgb(255, 166, 0)",
 BorderWidth = 2,
 HoverBorderWidth = 4,
-//PointBackgroundColor = "rgb(88, 80, 141)",
-//PointBorderColor = "rgb(88, 80, 141)",
-//PointRadius = 0, // hide points
-//PointHoverRadius = 4,
 },
 new LineChartDataset()
 {
@@ -446,10 +452,6 @@ BackgroundColor = "rgb(88, 80, 141)",
 BorderColor = "rgb(88, 80, 141)",
 BorderWidth = 2,
 HoverBorderWidth = 4,
-// PointBackgroundColor = "rgb(255, 166, 0)",
-// PointBorderColor = "rgb(255, 166, 0)",
-// PointRadius = 0, // hide points
-// PointHoverRadius = 4,
 }
 }
             };
@@ -471,7 +473,6 @@ HoverBorderWidth = 4,
         {
             await lineChart.InitializeAsync(data, options);
         }
-        // StateHasChanged();
     }
 }
 <script>
