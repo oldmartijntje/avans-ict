@@ -1,3 +1,4 @@
 {
-    "dotnet.defaultSolution": "ConsoleApp1henkie.sln"
+    "dotnet.defaultSolution": "ConsoleApp1henkie.sln",
+    "avans-statisticalrobot.connected-robot": "100000002ea8862f"
 }
