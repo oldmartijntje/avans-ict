@@ -1,0 +1,28 @@
+@page "/MagicNumber"
+
+<div class="border border-primary rounded p-3">
+    <h2>MagicNumber</h2>
+
+    <p class="text-center">The 6 magic numbers are: </p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="text-center col-md-6 col-md-3 col-lg-4 bg-danger">@_magicNumber1</div>
+            <div class="text-center col-md-6 col-md-3 col-lg-4 bg-info">@_magicNumber2</div>
+            <div class="text-center col-md-12 col-md-6 col-lg-4 bg-primary">@_magicNumber3</div>
+        </div>
+        <div class="row">
+            <div class="text-center col-6 bg-danger">@_magicNumber4</div>
+            <div class="text-center col-4 bg-info">@_magicNumber5</div>
+            <div class="text-center col-2 bg-primary">@_magicNumber6</div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int _magicNumber1 = Random.Shared.Next(1 ,100);
+    private int _magicNumber2 = Random.Shared.Next(1 ,100);
+    private int _magicNumber3 = Random.Shared.Next(1 ,100);
+    private int _magicNumber4 = Random.Shared.Next(101 ,200);
+    private int _magicNumber5 = Random.Shared.Next(101 ,200);
+    private int _magicNumber6 = Random.Shared.Next(101 ,200);
+}

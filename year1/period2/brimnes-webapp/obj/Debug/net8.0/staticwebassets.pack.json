@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\brimnes-webapp.bundle.scp.css",
+      "PackagePath": "staticwebassets\\brimnes-webapp.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.brimnes-webapp.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.brimnes-webapp.props",
+      "PackagePath": "build\\brimnes-webapp.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.brimnes-webapp.props",
+      "PackagePath": "buildMultiTargeting\\brimnes-webapp.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.brimnes-webapp.props",
+      "PackagePath": "buildTransitive\\brimnes-webapp.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

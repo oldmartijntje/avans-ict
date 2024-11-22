@@ -1,0 +1,85 @@
+﻿@page "/weather"
+@attribute [StreamRendering]
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@(32 + (int)(forecast.TemperatureC / 0.5556))</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private WeatherForecast[]? forecasts;
+    public enum WeatherSummary
+    {
+        Freezing,
+        Bracing,
+        Chilly,
+        Cool,
+        Mild,
+        Warm,
+        Balmy,
+        Hot,
+        Sweltering,
+        Scorching
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        await LoadWeatherForecast();
+    }
+
+    protected async Task LoadWeatherForecast()
+    {
+        await Task.Delay(500);
+        var startDate = DateOnly.FromDateTime(DateTime.Now);
+        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        {
+            Date = startDate.AddDays(index),
+            TemperatureC = Random.Shared.Next(-20, 55),
+            Summary = GetRandomEnumValue()
+        }).ToArray();
+    }
+    
+    public static WeatherSummary GetRandomEnumValue()
+    {
+        Array values = Enum.GetValues(typeof(WeatherSummary));
+        return (WeatherSummary)values.GetValue(Random.Shared.Next(values.Length));
+    }
+
+    private class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+        public int TemperatureC { get; set; }
+        public WeatherSummary? Summary { get; set; }
+    }
+
+}
