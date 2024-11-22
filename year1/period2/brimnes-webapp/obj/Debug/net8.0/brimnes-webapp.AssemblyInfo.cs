@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("brimnes-webapp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6c6bdb26ce4cee4478098517d13dda52d24984bb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+96abfc0872c2f228d1d5ed1237784f0fde3d3124")]
 [assembly: System.Reflection.AssemblyProductAttribute("brimnes-webapp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("brimnes-webapp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
