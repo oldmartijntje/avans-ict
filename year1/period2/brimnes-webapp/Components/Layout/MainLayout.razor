@@ -6,8 +6,10 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        <div id="marquee-container" class="messagesDisplay">
+            <div id="marquee-text" style="display: inline-block;">
+                <span id="messageDisplayText">Loading...</span>
+            </div>
         </div>
 
         <article class="content px-4">
@@ -21,3 +23,61 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+<script>
+    var messages = [];
+    const text = document.getElementById('marquee-text');
+    const container = document.getElementById('marquee-container');
+    const messageDisplayText = document.getElementById('messageDisplayText')
+    var id = 0;
+    var loadedMessages = false;
+    
+    let start = container.offsetWidth;
+    text.style.transform = `translateX(${start}px)`;
+      
+    function checkText() {
+        if (loadedMessages && messages[id] && messages[id].attributes && messages[id].attributes.text) {
+            messageDisplayText.innerHTML = messages[id].attributes.text;
+        }
+        console.log(messages[id])
+        id++;
+        if (id > messages.length) {
+            id = 0;
+        }
+    }
+
+    async function getData() {
+        const url = "https://api.oldmartijntje.nl/projectData/getProjectData?projectId=randomNewsMessages";
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            messages = json.projectData;
+            messages.sort(() => Math.random() - 0.5);
+            console.log(messages)
+            loadedMessages = true;
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
+
+    function startMarquee() {
+        checkText()
+        const distance = text.offsetWidth + container.offsetWidth;
+        const duration = distance / 100 * 1000; // Adjust speed (100 px/sec)
+    
+        text.animate(
+            [{ transform: `translateX(${start}px)` }, { transform: `translateX(${-text.offsetWidth}px)` }],
+            { duration: duration, iterations: 1 }
+        ).onfinish = () => {
+            console.log("Marquee has reached the end!");
+            startMarquee(); // Restart if needed
+        };
+    }
+    getData()
+    startMarquee();
+
+</script>

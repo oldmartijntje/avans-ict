@@ -49,3 +49,12 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+.messagesDisplay {
+    overflow: hidden; 
+    white-space: nowrap; 
+    width: 100%;
+    background-color: #000000;
+    color: #fff;
+    padding: 1rem 0;
+}
