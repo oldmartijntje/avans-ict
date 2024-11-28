@@ -1,11 +1,76 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {}
+    "net8.0": {
+      "Avans.StatisticalRobot/1.0.4": {
+        "type": "package",
+        "dependencies": {
+          "System.Device.Gpio": "3.2.0"
+        },
+        "compile": {
+          "lib/net8.0/StatisticalRobot-Lib.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/StatisticalRobot-Lib.dll": {}
+        }
+      },
+      "System.Device.Gpio/3.2.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/System.Device.Gpio.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/System.Device.Gpio.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net5.0/System.Device.Gpio.targets": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Avans.StatisticalRobot/1.0.4": {
+      "sha512": "/Tfgr3z0dzeV2cCTchV+P42nVcvI15KPwGKkJNj52wasySv6fVEi1Cf7eMP5h9GKcoC5E1gY0gFhPTgWVOFlkg==",
+      "type": "package",
+      "path": "avans.statisticalrobot/1.0.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "avans.statisticalrobot.1.0.4.nupkg.sha512",
+        "avans.statisticalrobot.nuspec",
+        "lib/net8.0/StatisticalRobot-Lib.dll"
+      ]
+    },
+    "System.Device.Gpio/3.2.0": {
+      "sha512": "jaL93IC1S2wZfCSLWt8/1lQCp/pDAzDNE5dfLq+pubEhCp0BjDZze6rJMu2KdOuCOeRxHmBuhtWrIRlrTKFsTg==",
+      "type": "package",
+      "path": "system.device.gpio/3.2.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "README.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net5.0/System.Device.Gpio.targets",
+        "lib/net6.0-windows10.0.17763/System.Device.Gpio.dll",
+        "lib/net6.0-windows10.0.17763/System.Device.Gpio.xml",
+        "lib/net6.0/System.Device.Gpio.dll",
+        "lib/net6.0/System.Device.Gpio.xml",
+        "lib/netstandard2.0/System.Device.Gpio.dll",
+        "lib/netstandard2.0/System.Device.Gpio.xml",
+        "system.device.gpio.3.2.0.nupkg.sha512",
+        "system.device.gpio.nuspec"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0": []
+    "net8.0": [
+      "Avans.StatisticalRobot >= 1.0.4"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\oldma\\.nuget\\packages\\": {},
@@ -56,6 +121,12 @@
     "frameworks": {
       "net8.0": {
         "targetAlias": "net8.0",
+        "dependencies": {
+          "Avans.StatisticalRobot": {
+            "target": "Package",
+            "version": "[1.0.4, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

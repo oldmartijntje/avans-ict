@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\brimnes-webapp.csproj": {}
+    "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\mqttConsole\\mqttConsole.csproj": {}
   },
   "projects": {
-    "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\brimnes-webapp.csproj": {
+    "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\mqttConsole\\mqttConsole.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\brimnes-webapp.csproj",
-        "projectName": "brimnes-webapp",
-        "projectPath": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\brimnes-webapp.csproj",
+        "projectUniqueName": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\mqttConsole\\mqttConsole.csproj",
+        "projectName": "mqttConsole",
+        "projectPath": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\mqttConsole\\mqttConsole.csproj",
         "packagesPath": "C:\\Users\\oldma\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\obj\\",
+        "outputPath": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\mqttConsole\\obj\\",
         "projectStyle": "PackageReference",
         "UsingMicrosoftNETSdk": false,
         "fallbackFolders": [
@@ -50,9 +50,13 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Avans.StatisticalRobot": {
+            "HiveMQtt": {
               "target": "Package",
-              "version": "[1.0.4, )"
+              "version": "[0.24.0, )"
+            },
+            "MQTTnet": {
+              "target": "Package",
+              "version": "[5.0.0.1214-RC, )"
             }
           },
           "imports": [
@@ -67,9 +71,6 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

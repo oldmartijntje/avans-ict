@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "DwY8VWDnoHU=",
+  "dgSpecHash": "umhFXsF4t8s=",
   "success": true,
   "projectFilePath": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\brimnes-webapp\\brimnes-webapp.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\oldma\\.nuget\\packages\\avans.statisticalrobot\\1.0.4\\avans.statisticalrobot.1.0.4.nupkg.sha512",
+    "C:\\Users\\oldma\\.nuget\\packages\\system.device.gpio\\3.2.0\\system.device.gpio.3.2.0.nupkg.sha512"
+  ],
   "logs": []
 }
