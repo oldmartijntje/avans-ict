@@ -25,14 +25,15 @@ namespace OOP_first_steps.EventHandler
             {
                 if (callback.EventName == eventName)
                 {
-                    callback.Callback();
+                    callback.Callback(value);
                 }
             }
             Console.WriteLine("Event Emitted");
         }
 
         // subscribe to an event
-        public int On(string eventName, object caller, Action callback) {
+        public int On(string eventName, object caller, Action callback)
+        {
             this.LastId++;
             this.Callbacks.Add(new Event(this.LastId, eventName, caller, callback));
             return this.LastId;
