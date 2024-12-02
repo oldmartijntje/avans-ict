@@ -54,7 +54,7 @@ if (connectResult.ResultCode == MqttClientConnectResultCode.Success)
             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
             .WithRetainFlag()
             .Build();
-
+    
         await mqttClient.PublishAsync(message);
         await Task.Delay(1000); // Wait for 1 second
     }

@@ -1,0 +1,15 @@
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\bin\Debug\net6.0\OOP first steps.exe
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\bin\Debug\net6.0\OOP first steps.deps.json
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\bin\Debug\net6.0\OOP first steps.runtimeconfig.json
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\bin\Debug\net6.0\OOP first steps.dll
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\bin\Debug\net6.0\OOP first steps.pdb
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\obj\Debug\net6.0\OOP first steps.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\obj\Debug\net6.0\OOP first steps.AssemblyInfoInputs.cache
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\obj\Debug\net6.0\OOP first steps.AssemblyInfo.cs
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\obj\Debug\net6.0\OOP first steps.csproj.CoreCompileInputs.cache
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\obj\Debug\net6.0\OOP first steps.sourcelink.json
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\obj\Debug\net6.0\OOP first steps.dll
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\obj\Debug\net6.0\refint\OOP first steps.dll
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\obj\Debug\net6.0\OOP first steps.pdb
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\obj\Debug\net6.0\OOP first steps.genruntimeconfig.cache
+C:\Users\oldma\scripts\.School_ict\avans-ict\year1\period2\OOP first steps\OOP first steps\obj\Debug\net6.0\ref\OOP first steps.dll

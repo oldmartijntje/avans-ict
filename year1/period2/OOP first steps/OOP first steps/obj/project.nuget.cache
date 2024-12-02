@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "cpJ96rp6qY46dlieXnGIE6ETfbjVCoXdM9zaT8IxNXwtc6gsu5XaT/KeI+uZj5Xvw7uA5T51ktbI9xTP3WCvcw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\oldma\\scripts\\.School_ict\\avans-ict\\year1\\period2\\OOP first steps\\OOP first steps\\OOP first steps.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\oldma\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.25\\microsoft.windowsdesktop.app.ref.6.0.25.nupkg.sha512",
+    "C:\\Users\\oldma\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.25\\microsoft.netcore.app.ref.6.0.25.nupkg.sha512",
+    "C:\\Users\\oldma\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.25\\microsoft.aspnetcore.app.ref.6.0.25.nupkg.sha512",
+    "C:\\Users\\oldma\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.25\\microsoft.netcore.app.host.win-x64.6.0.25.nupkg.sha512"
+  ],
+  "logs": []
+}
