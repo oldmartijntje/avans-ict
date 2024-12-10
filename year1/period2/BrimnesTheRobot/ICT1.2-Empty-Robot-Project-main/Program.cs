@@ -9,50 +9,72 @@ Button button6 = new Button(6);
 Led led22 = new Led(22);
 Button button23 = new Button(23);
 
-Robot.PlayNotes("C4");
-Console.WriteLine($"{Robot.ReadBatteryMillivolts()}");
-for (short i = 0; i < 100; i++)
-{
-    Robot.Motors(i, i);
-    Robot.Wait(20);
-}
-for (short i = 100; i > 0; i--)
-{
-    Robot.Motors(i, i);
-    Robot.Wait(20);
-}
-Robot.PlayNotes("C4C4G4G4A4A4G4F4F4E4E4D4D4C4");
+short offset = 1;
+bool isOn = true;
 
+Robot.PlayNotes("C4");
+Console.WriteLine($"Battery left: {Robot.ReadBatteryMillivolts()}");
 
 string lastState1 = "";
 string lastState2 = "";
-
-while (true)
+Console.WriteLine(button6.GetState());
+Console.WriteLine(button23.GetState());
+while (isOn)
 {
-    if (button6.GetState() != lastState1)
+    if (button6.GetState() == "Released")
     {
-        lastState1 = button6.GetState();
-        if (button6.GetState() == "Pressed")
+        led5.SetOn();
+        if (lastState1 == "Pressed")
         {
-            led22.SetOn();
-        }
-        else
-        {
-            led22.SetOff();
+            offset = OnClick(offset, isOn);
         }
     }
-    if (button23.GetState() != lastState2)
+    else
     {
-        lastState2 = button23.GetState();
-        if (button23.GetState() == "Pressed")
+        led5.SetOff();
+    }
+    lastState1 = button6.GetState();
+    if (button23.GetState() == "Released")
+    {
+        led22.SetOn();
+        Console.WriteLine("Button 23 Released");
+        if (lastState2 == "Pressed")
         {
-            led5.SetOn();
-        }
-        else
-        {
+            isOn = false;
+            Robot.Wait(200);
+            Robot.Motors(0, 0);
+            led22.SetOff();
             led5.SetOff();
         }
     }
-    Console.WriteLine(button6.GetState());
-    Robot.Wait(10);
+    else
+    {
+        led22.SetOff();
+    }
+    lastState2 = button23.GetState();
+    Robot.Wait(200);
+}
+
+static short OnClick(short offset, bool isOn)
+{
+    Console.WriteLine("Button clicked");
+    offset = (short)(offset == 1 ? 0 : 1);
+    RunBot(offset, isOn);
+    // offset -= 1;
+    return offset;
+}
+
+static void RunBot(short offset, bool isOn)
+{
+    Robot.PlayNotes("C4C4G4G4A4A4G4F4F4E4E4D4D4C4");
+    Robot.Wait(1000);
+    Console.WriteLine("Offset: " + offset);
+
+    Robot.Motors((short)(-100 + offset), -100);
+
+    Robot.Wait(15000);
+
+    Robot.Motors(0, 0);
+
+
 }
