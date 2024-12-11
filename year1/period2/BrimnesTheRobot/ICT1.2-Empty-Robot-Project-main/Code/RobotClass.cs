@@ -1,21 +1,14 @@
 
 using RobotProject.EventHandler;
 
-enum RobotAction
+class RobotClass : IRobotObject
 {
-    Left,
-    Right,
-    Forward,
-    Backward,
-}
-
-class WheeledRobot : IRobotObject
-{
-    private Action CurrentAction { get; set; }
     public NewEventHandler EventHandler { get; set; }
-    public int TickId { get; set; }
-    public WheeledRobot(NewEventHandler eventHandler)
+    private int TickId { get; set; }
+    private IMovementHandler MovementHandler { get; set; }
+    public RobotClass(NewEventHandler eventHandler, IMovementHandler movementHandler)
     {
+        this.MovementHandler = movementHandler;
         this.EventHandler = eventHandler;
         this.OnInit();
     }
@@ -41,6 +34,10 @@ class WheeledRobot : IRobotObject
         if (this.TickId % RobotConfig.ROBOT_BUTTON_CHECK_TICK_INTERVAL == 0)
         {
             this.CheckButtons();
+        }
+        if (this.TickId % RobotConfig.ROBOT_MOVEMENT_TICK_INTERVAL == 0)
+        {
+            this.MovementHandler.RunTick();
         }
     }
 
