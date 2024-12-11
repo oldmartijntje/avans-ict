@@ -23,6 +23,10 @@ class RobotClass : IRobotObject
     {
         this.EventHandler.On("ButtonEmergancyPressed", this, (value) =>
         {
+            if (this.Mode == RobotMode.EmergancyStop)
+            {
+                return;
+            }
             Console.WriteLine("Emergancy Button Pressed");
             this.EmergancyButton.Led.SetOff();
             this.Mode = RobotMode.EmergancyStop;
