@@ -7,12 +7,14 @@ class RobotClass : IRobotObject
     public NewEventHandler EventHandler { get; set; }
     private int TickId { get; set; }
     private IMovementHandler MovementHandler { get; set; }
+    private MqttHandler MqttHandler { get; set; }
     private RobotMode Mode { get; set; }
     private RobotLedButton EmergancyButton { get; set; }
-    public RobotClass(NewEventHandler eventHandler, IMovementHandler movementHandler)
+    public RobotClass(NewEventHandler eventHandler, IMovementHandler movementHandler, MqttHandler mqttHandler)
     {
-        this.MovementHandler = movementHandler;
         this.EventHandler = eventHandler;
+        this.MovementHandler = movementHandler;
+        this.MqttHandler = mqttHandler;
         this.Mode = RobotMode.On;
         this.EmergancyButton = new RobotLedButton(eventHandler, "Emergancy");
         this.EmergancyButton.Led.SetOn();
@@ -78,6 +80,13 @@ class RobotClass : IRobotObject
     {
         Console.WriteLine("MQTT");
         // report the data to MQTT
+        this.MqttHandler.SendMqttMessage($"TickId: {this.TickId}").ContinueWith(task =>
+        {
+            if (!task.Result)
+            {
+                Console.WriteLine("Failed to send MQTT message");
+            }
+        });
     }
 
     private void CheckButtons()

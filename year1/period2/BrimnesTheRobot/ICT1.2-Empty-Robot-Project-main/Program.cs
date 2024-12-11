@@ -7,7 +7,7 @@ Console.WriteLine("Hello world");
 var eventHandler = new NewEventHandler();
 var mqttHandler = new MqttHandler(eventHandler);
 var movementHandler = new WheeledRobotMovementHandler(eventHandler);
-var brimnes = new RobotClass(eventHandler, movementHandler);
+var brimnes = new RobotClass(eventHandler, movementHandler, mqttHandler);
 
 while (true)
 {

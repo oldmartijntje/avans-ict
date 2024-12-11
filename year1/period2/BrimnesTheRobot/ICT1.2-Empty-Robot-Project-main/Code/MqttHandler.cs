@@ -7,76 +7,88 @@ using RobotProject.EventHandler;
 
 class MqttHandler : IRobotObject
 {
+    private bool activated { get; set; }
+    private IMqttClient MqttClient { get; set; }
     public NewEventHandler EventHandler { get; set; }
     public MqttHandler(NewEventHandler eventHandler)
     {
         this.EventHandler = eventHandler;
+        this.activated = false;
         this.OnInit();
         // het boeit niet dat er geen await is, zolang er maar niks hieronder komt
     }
 
+    public async Task<bool> SendMqttMessage(string message, string topic = RobotConfig.DEFAULT_MQTT_DATA_SENDING_TOPIC)
+    {
+        Console.WriteLine($"Sending MQTT message: {message}");
+        if (!this.activated)
+        {
+            return false;
+        }
+        var messageObject = new MqttApplicationMessageBuilder()
+                    .WithTopic(topic)
+                    .WithPayload(message)
+                    .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
+                    .WithRetainFlag()
+                    .Build();
+
+        await this.MqttClient.PublishAsync(messageObject);
+        // await Task.Delay(1000); // Wait for 1 second
+        return true;
+    }
+
     public async void OnInit()
     {
-        Console.WriteLine("Hello, World!");
+        Console.WriteLine("Starting MQTT client...");
 
-        string broker = "test.mosquitto.org";
-        int port = 1883;
+        string broker = RobotConfig.MQTT_BROKER;
+        int port = RobotConfig.MQTT_PORT;
         string topic = "Brimnes/Comms";
         string clientId = Guid.NewGuid().ToString();
-        string username = "emqxtest";
-        string password = "******";
-        bool loop = true;
 
         // Create a MQTT client factory
         var factory = new MqttClientFactory();
 
         // Create a MQTT client instance
-        var mqttClient = factory.CreateMqttClient();
-
+        this.MqttClient = factory.CreateMqttClient();
+        MqttClientOptions? options = null;
         // Create MQTT client options
-        var options = new MqttClientOptionsBuilder()
-            .WithTcpServer(broker, port) // MQTT broker address and port
-            .WithClientId(clientId)
-            .WithCleanSession()
-            .Build();
+        if (RobotConfig.MQTT_AUTH)
+        {
+            options = new MqttClientOptionsBuilder()
+                .WithClientId(clientId)
+                .WithTcpServer(broker, port)
+                .WithCredentials(RobotConfig.MQTT_USERNAME, RobotConfig.MQTT_PASSWORD)
+                .WithCleanSession()
+                .Build();
+        }
+        else
+        {
+            options = new MqttClientOptionsBuilder()
+                .WithTcpServer(broker, port)
+                .WithClientId(clientId)
+                .WithCleanSession()
+                .Build();
+        }
 
-        var connectResult = await mqttClient.ConnectAsync(options);
+        var connectResult = await this.MqttClient.ConnectAsync(options);
 
         if (connectResult.ResultCode == MqttClientConnectResultCode.Success)
         {
+            this.activated = true;
             Console.WriteLine("Connected to MQTT broker successfully.");
 
             // Subscribe to a topic
-            await mqttClient.SubscribeAsync(topic);
+            await MqttClient.SubscribeAsync(topic);
 
             // Callback function when a message is received
-            mqttClient.ApplicationMessageReceivedAsync += e =>
+            MqttClient.ApplicationMessageReceivedAsync += e =>
             {
                 Console.WriteLine($"Received message: {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-                this.EventHandler.Emit("mqttMessage", Encoding.UTF8.GetString(e.ApplicationMessage.Payload));
-                if (Encoding.UTF8.GetString(e.ApplicationMessage.Payload) == "exit")
-                {
-                    loop = false;
-                }
+                this.EventHandler.Emit("rawMqttMessage", Encoding.UTF8.GetString(e.ApplicationMessage.Payload));
+
                 return Task.CompletedTask;
             };
-            for (int i = 0; i < 10; i++)
-            {
-                var message = new MqttApplicationMessageBuilder()
-                    .WithTopic(topic)
-                    .WithPayload($"Hello, MQTT! Message number {i}")
-                    .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
-                    .WithRetainFlag()
-                    .Build();
-
-                await mqttClient.PublishAsync(message);
-                await Task.Delay(1000); // Wait for 1 second
-            }
-
-            while (loop)
-            {
-                await Task.Delay(1000); // Wait for 1 second
-            }
         }
     }
 }
