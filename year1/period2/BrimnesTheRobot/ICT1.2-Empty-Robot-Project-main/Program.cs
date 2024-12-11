@@ -1,5 +1,6 @@
 using System.Device.Gpio;
 using Avans.StatisticalRobot;
+using RobotProject.EventHandler;
 
 Console.WriteLine("Hello world");
 
@@ -11,6 +12,13 @@ Button button23 = new Button(23);
 
 short offset = 1;
 bool isOn = true;
+
+var eventHandler = new NewEventHandler();
+var x = new MqttHandler(eventHandler);
+eventHandler.On("mqttMessage", led5, (object message) =>
+{
+    Robot.PlayNotes("C4");
+});
 
 Robot.PlayNotes("C4");
 Console.WriteLine($"Battery left: {Robot.ReadBatteryMillivolts()}");
