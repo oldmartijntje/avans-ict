@@ -18,4 +18,9 @@ class WheeledRobotMovementHandler : IMovementHandler
     {
         Console.WriteLine("RunTick");
     }
+
+    public void EmergancyStopMovement()
+    {
+        Console.WriteLine("EmergancyStop");
+    }
 }

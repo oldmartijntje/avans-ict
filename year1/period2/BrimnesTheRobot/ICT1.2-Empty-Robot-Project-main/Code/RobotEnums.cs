@@ -7,3 +7,10 @@ enum RobotAction
     Calculate,
     Stop,
 }
+
+enum RobotMode
+{
+    On,
+    Off,
+    EmergancyStop
+}
