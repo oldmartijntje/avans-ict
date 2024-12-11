@@ -8,7 +8,7 @@ Console.WriteLine("Hello, World!");
 
 string broker = "test.mosquitto.org";
 int port = 1883;
-string topic = "AvansDirect/avoidBrightspace";
+string topic = "Brimnes/Comms";
 string clientId = Guid.NewGuid().ToString();
 string username = "emqxtest";
 string password = "******";
@@ -54,7 +54,7 @@ if (connectResult.ResultCode == MqttClientConnectResultCode.Success)
             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
             .WithRetainFlag()
             .Build();
-    
+
         await mqttClient.PublishAsync(message);
         await Task.Delay(1000); // Wait for 1 second
     }
@@ -63,6 +63,6 @@ if (connectResult.ResultCode == MqttClientConnectResultCode.Success)
     {
         await Task.Delay(1000); // Wait for 1 second
     }
-        
+
 
 }

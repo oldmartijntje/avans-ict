@@ -21,7 +21,7 @@ class MqttHandler : IRobotObject
 
         string broker = "test.mosquitto.org";
         int port = 1883;
-        string topic = "AvansDirect/avoidBrightspace";
+        string topic = "Brimnes/Comms";
         string clientId = Guid.NewGuid().ToString();
         string username = "emqxtest";
         string password = "******";
