@@ -1,4 +1,5 @@
 
+using System.Text.Json;
 using Avans.StatisticalRobot;
 using RobotProject.EventHandler;
 
@@ -6,12 +7,14 @@ class RobotClass : IRobotObject
 {
     public NewEventHandler EventHandler { get; set; }
     private int TickId { get; set; }
+    private List<RobotLog> Logs { get; set; }
     private IMovementHandler MovementHandler { get; set; }
     private MqttHandler MqttHandler { get; set; }
     private RobotMode Mode { get; set; }
     private RobotLedButton EmergancyButton { get; set; }
     public RobotClass(NewEventHandler eventHandler, IMovementHandler movementHandler, MqttHandler mqttHandler)
     {
+        this.Logs = new List<RobotLog>();
         this.EventHandler = eventHandler;
         this.MovementHandler = movementHandler;
         this.MqttHandler = mqttHandler;
@@ -19,6 +22,11 @@ class RobotClass : IRobotObject
         this.EmergancyButton = new RobotLedButton(eventHandler, "Emergancy");
         this.EmergancyButton.Led.SetOn();
         this.OnInit();
+    }
+
+    private void AppendLog(string message)
+    {
+        this.Logs.Add(new RobotLog(DateTime.Now, message));
     }
 
     public void OnInit()
@@ -30,6 +38,7 @@ class RobotClass : IRobotObject
                 return;
             }
             Console.WriteLine("Emergancy Button Pressed");
+            this.AppendLog("Emergancy Button Pressed");
             this.EmergancyButton.Led.SetOff();
             this.Mode = RobotMode.EmergancyStop;
             this.MovementHandler.EmergancyStopMovement();
@@ -69,22 +78,36 @@ class RobotClass : IRobotObject
         if (this.TickId % RobotConfig.ROBOT_BUTTON_CHECK_TICK_INTERVAL == 0)
         {
             this.CheckButtons();
+            this.Logs.Add(new RobotLog(DateTime.Now, "Button check"));
         }
         if (this.TickId % RobotConfig.ROBOT_MOVEMENT_TICK_INTERVAL == 0 && this.Mode == RobotMode.On)
         {
             this.MovementHandler.RunTick();
+            this.Logs.Add(new RobotLog(DateTime.Now, "Movement tick"));
         }
     }
 
     private void ReportDataToMqtt()
     {
         Console.WriteLine("MQTT");
-        // report the data to MQTT
-        this.MqttHandler.SendMqttMessage($"TickId: {this.TickId}").ContinueWith(task =>
+        if (this.Logs.Count == 0)
         {
-            if (!task.Result)
+            return;
+        }
+        List<RobotLog> localLogs = this.Logs;
+        this.Logs = new List<RobotLog>();
+        string StringifiedLogs = JsonSerializer.Serialize(localLogs, new JsonSerializerOptions
+        {
+            WriteIndented = true // Makes the JSON pretty-printed (optional)
+        });
+
+
+        // report the data to MQTT
+        this.MqttHandler.SendMqttMessage($"{StringifiedLogs}").ContinueWith(task =>
+        {
+            if (task == null || task.Result == false)
             {
-                Console.WriteLine("Failed to send MQTT message");
+                Console.WriteLine("Error sending MQTT message");
             }
         });
     }
