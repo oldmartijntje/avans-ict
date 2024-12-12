@@ -7,7 +7,7 @@ using RobotProject.EventHandler;
 
 class MqttHandler : IRobotObject
 {
-    private bool activated { get; set; }
+    private bool Activated { get; set; }
     private IMqttClient MqttClient { get; set; }
     public NewEventHandler EventHandler { get; set; }
     private string MqttTopicOffset { get; set; }
@@ -26,7 +26,7 @@ class MqttHandler : IRobotObject
         {
             this.MqttTopicOffset = "";
         }
-        this.activated = false;
+        this.Activated = false;
 
         this.OnInit();
         // het boeit niet dat er geen await is bij de OnInit(), zolang er maar niks hieronder komt
@@ -35,7 +35,7 @@ class MqttHandler : IRobotObject
     public async Task<bool> SendMqttMessage(string message, string topic = RobotConfig.DEFAULT_MQTT_DATA_SENDING_TOPIC)
     {
         Console.WriteLine($"Sending MQTT message: {message}");
-        if (!this.activated)
+        if (!this.Activated)
         {
             return false;
         }
@@ -92,7 +92,7 @@ class MqttHandler : IRobotObject
 
         if (connectResult.ResultCode == MqttClientConnectResultCode.Success)
         {
-            this.activated = true;
+            this.Activated = true;
             Console.WriteLine("Connected to MQTT broker successfully.");
 
             // Subscribe to a topic

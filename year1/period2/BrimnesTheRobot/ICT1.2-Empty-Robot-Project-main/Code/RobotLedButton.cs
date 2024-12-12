@@ -29,16 +29,19 @@ class RobotLedButton : IRobotObject
         return this.ButtonName;
     }
 
-    public void Check()
+    public bool Check()
     {
+        var pressed = false;
         // logic for emitting event when button press is released
         if (this.Button.GetState() == "Released")
         {
             if (this.LastState == true)
             {
+                pressed = true;
                 this.EventHandler.Emit($"Button{this.ButtonName}Pressed", true);
             }
         }
         this.LastState = this.Button.GetState() == "Pressed";
+        return pressed;
     }
 }

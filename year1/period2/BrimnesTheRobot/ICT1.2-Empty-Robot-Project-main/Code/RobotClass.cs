@@ -13,17 +13,18 @@ class RobotClass : IRobotObject
     private IMovementHandler MovementHandler { get; set; }
     private MqttHandler MqttHandler { get; set; }
     private RobotMode Mode { get; set; }
-    private RobotLedButton EmergancyButton { get; set; }
-    private int BatteryMillivolts { get; set; }
+    private RobotLedButton EmergencyButton { get; set; }
+    private int? BatteryMillivolts { get; set; }
     public RobotClass(NewEventHandler eventHandler, IMovementHandler movementHandler, MqttHandler mqttHandler)
     {
+        this.BatteryMillivolts = null;
         this.Logs = new List<RobotLog>();
         this.EventHandler = eventHandler;
         this.MovementHandler = movementHandler;
         this.MqttHandler = mqttHandler;
         this.Mode = RobotMode.On;
-        this.EmergancyButton = new RobotLedButton(eventHandler, "Emergancy");
-        this.EmergancyButton.Led.SetOn();
+        this.EmergencyButton = new RobotLedButton(eventHandler, "Emergancy");
+        this.EmergencyButton.Led.SetOn();
         this.OnInit();
     }
 
@@ -44,7 +45,7 @@ class RobotClass : IRobotObject
             }
             Console.WriteLine("Emergancy Button Pressed");
             this.AppendLog("EmergancyButton", new { Pressed = true });
-            this.EmergancyButton.Led.SetOff();
+            this.EmergencyButton.Led.SetOff();
             this.Mode = RobotMode.EmergancyStop;
             this.MovementHandler.EmergancyStopMovement();
         });
@@ -73,7 +74,7 @@ class RobotClass : IRobotObject
         });
     }
 
-    public async void Tick()
+    public async Task Tick()
     {
         // handle all logic in a robottick
         this.TickId += 1;
@@ -136,6 +137,6 @@ class RobotClass : IRobotObject
         {
             Console.WriteLine($"Error reading battery millivolts.");
         }
-        this.EmergancyButton.Check();
+        this.EmergencyButton.Check();
     }
 }
