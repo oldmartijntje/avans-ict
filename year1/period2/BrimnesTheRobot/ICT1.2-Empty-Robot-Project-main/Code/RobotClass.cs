@@ -42,7 +42,7 @@ class RobotClass : IRobotObject
                 return;
             }
             Console.WriteLine("Emergancy Button Pressed");
-            this.AppendLog("Emergancy Button Pressed");
+            this.AppendLog("EmergancyButton", new { Pressed = true });
             this.EmergancyButton.Led.SetOff();
             this.Mode = RobotMode.EmergancyStop;
             this.MovementHandler.EmergancyStopMovement();
