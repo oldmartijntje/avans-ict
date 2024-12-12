@@ -14,6 +14,7 @@ class RobotClass : IRobotObject
     private MqttHandler MqttHandler { get; set; }
     private RobotMode Mode { get; set; }
     private RobotLedButton EmergancyButton { get; set; }
+    private int BatteryMillivolts { get; set; }
     public RobotClass(NewEventHandler eventHandler, IMovementHandler movementHandler, MqttHandler mqttHandler)
     {
         this.Logs = new List<RobotLog>();
@@ -72,17 +73,18 @@ class RobotClass : IRobotObject
         });
     }
 
-    public void Tick()
+    public async void Tick()
     {
         // handle all logic in a robottick
         this.TickId += 1;
         // checks per tick to see if X should happen.
         if (this.TickId % RobotConfig.MQTT_REPORT_TICK_INTERVAL == 0)
         {
+            var robotInfo = new { TickId = this.TickId, Mode = Enum.GetName(this.Mode), LastMeassuredBatteryMillivolts = this.BatteryMillivolts };
             // Send logs over mqtt
-            this.AppendLog("Ping");
+            this.AppendLog("Ping", robotInfo);
             this.ReportDataToMqtt();
-            this.AppendLog("PreviousPing");
+            this.AppendLog("PreviousPing", robotInfo);
 
         }
         if (this.TickId % RobotConfig.ROBOT_BUTTON_CHECK_TICK_INTERVAL == 0)
@@ -126,6 +128,14 @@ class RobotClass : IRobotObject
 
     private void CheckButtons()
     {
+        try
+        {
+            this.BatteryMillivolts = Robot.ReadBatteryMillivolts();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error reading battery millivolts.");
+        }
         this.EmergancyButton.Check();
     }
 }

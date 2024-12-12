@@ -1,21 +1,27 @@
 [
-    [
-        {
-            "Time": "2024-12-12T12:47:21.3040033+01:00",
-            "Protocol": "PreviousPing",
-            "Value": null
-        },
-        {
-            "Time": "2024-12-12T12:47:24.1127554+01:00",
-            "Protocol": "EmergancyButton",
-            "Value": {
-                "Pressed": true
-            }
-        },
-        {
-            "Time": "2024-12-12T12:47:26.3161678+01:00",
-            "Protocol": "Ping",
-            "Value": null
+    {
+        "Time": "2024-12-12T12:56:13.2187928+01:00",
+        "Protocol": "PreviousPing",
+        "Value": {
+            "TickId": 250,
+            "Mode": "On",
+            "LastMeassuredBatteryMillivolts": 0
         }
-    ]
+    },
+    {
+        "Time": "2024-12-12T12:56:15.1873881+01:00",
+        "Protocol": "EmergancyButton",
+        "Value": {
+            "Pressed": true
+        }
+    },
+    {
+        "Time": "2024-12-12T12:56:20.654597+01:00",
+        "Protocol": "Ping",
+        "Value": {
+            "TickId": 300,
+            "Mode": "EmergancyStop",
+            "LastMeassuredBatteryMillivolts": 0
+        }
+    }
 ]
