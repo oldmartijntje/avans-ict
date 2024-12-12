@@ -28,7 +28,6 @@ namespace RobotProject.EventHandler
                     callback.Callback(value);
                 }
             }
-            Console.WriteLine("Event Emitted");
         }
 
         // subscribe to an event

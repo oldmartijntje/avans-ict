@@ -18,11 +18,14 @@ class RobotLedButton : IRobotObject
 
     public void OnInit()
     {
+        // run the first check after initialisation
         this.Check();
     }
 
     public string GetButtonName()
     {
+        // idk if we'll need this, but it's here
+        // for getting the button name
         return this.ButtonName;
     }
 

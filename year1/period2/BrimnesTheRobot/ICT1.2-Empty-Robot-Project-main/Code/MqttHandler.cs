@@ -10,9 +10,19 @@ class MqttHandler : IRobotObject
     private bool activated { get; set; }
     private IMqttClient MqttClient { get; set; }
     public NewEventHandler EventHandler { get; set; }
+    private string MqttTopicOffset { get; set; }
     public MqttHandler(NewEventHandler eventHandler)
     {
         this.EventHandler = eventHandler;
+        if (RobotConfig.MQTT_TOPIC_RANDOMISATION)
+        {
+            this.MqttTopicOffset = $"/{Guid.NewGuid().ToString()}";
+            Console.WriteLine($"Randomised MQTT topic offset: '{this.MqttTopicOffset}'");
+        }
+        else
+        {
+            this.MqttTopicOffset = "";
+        }
         this.activated = false;
         this.OnInit();
         // het boeit niet dat er geen await is, zolang er maar niks hieronder komt
@@ -25,6 +35,7 @@ class MqttHandler : IRobotObject
         {
             return false;
         }
+        topic += this.MqttTopicOffset;
         var messageObject = new MqttApplicationMessageBuilder()
                     .WithTopic(topic)
                     .WithPayload(message)
@@ -43,7 +54,8 @@ class MqttHandler : IRobotObject
 
         string broker = RobotConfig.MQTT_BROKER;
         int port = RobotConfig.MQTT_PORT;
-        string topic = "Brimnes/Comms";
+        string topic = RobotConfig.MQTT_DATA_RECEIVING_TOPIC;
+        topic += this.MqttTopicOffset;
         string clientId = Guid.NewGuid().ToString();
 
         // Create a MQTT client factory

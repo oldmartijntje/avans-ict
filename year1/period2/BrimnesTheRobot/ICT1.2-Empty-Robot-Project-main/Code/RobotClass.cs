@@ -69,27 +69,38 @@ class RobotClass : IRobotObject
 
     public void Tick()
     {
-        Console.WriteLine("Tick");
+        // handle all logic in a robottick
         this.TickId += 1;
+        // checks per tick to see if X should happen.
         if (this.TickId % RobotConfig.MQTT_REPORT_TICK_INTERVAL == 0)
         {
+            // Send logs over mqtt
+            this.Logs.Add(new RobotLog(DateTime.Now, "Ping"));
             this.ReportDataToMqtt();
+            this.Logs.Add(new RobotLog(DateTime.Now, "PreviousPing"));
+
         }
         if (this.TickId % RobotConfig.ROBOT_BUTTON_CHECK_TICK_INTERVAL == 0)
         {
+            // check the emergancy button
             this.CheckButtons();
-            this.Logs.Add(new RobotLog(DateTime.Now, "Button check"));
         }
         if (this.TickId % RobotConfig.ROBOT_MOVEMENT_TICK_INTERVAL == 0 && this.Mode == RobotMode.On)
         {
+            // run the movement handler tick
             this.MovementHandler.RunTick();
-            this.Logs.Add(new RobotLog(DateTime.Now, "Movement tick"));
+        }
+        if (this.TickId > RobotConfig.LOOP_RESET_TICK_INTERVAL)
+        {
+            // reset tick id to make sure it doesn't tick over to - values.
+            // cause idk if that would break the % operator, probably not but still.
+            this.TickId = this.TickId % RobotConfig.LOOP_RESET_TICK_INTERVAL;
         }
     }
 
     private void ReportDataToMqtt()
     {
-        Console.WriteLine("MQTT");
+        // send all logs to mqtt and empty the logs
         if (this.Logs.Count == 0)
         {
             return;
@@ -98,7 +109,7 @@ class RobotClass : IRobotObject
         this.Logs = new List<RobotLog>();
         string StringifiedLogs = JsonSerializer.Serialize(localLogs, new JsonSerializerOptions
         {
-            WriteIndented = true // Makes the JSON pretty-printed (optional)
+            WriteIndented = true // Makes the JSON pretty (4 spatie indent)
         });
 
 
@@ -114,7 +125,6 @@ class RobotClass : IRobotObject
 
     private void CheckButtons()
     {
-        Console.WriteLine("CheckButtons");
         this.EmergancyButton.Check();
     }
 }
