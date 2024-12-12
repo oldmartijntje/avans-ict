@@ -31,6 +31,7 @@ class RobotLedButton : IRobotObject
 
     public void Check()
     {
+        // logic for emitting event when button press is released
         if (this.Button.GetState() == "Released")
         {
             if (this.LastState == true)

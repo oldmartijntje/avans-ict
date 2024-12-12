@@ -4,14 +4,14 @@ class RobotLog
     // This logdata is purely for sending through MQTT
 
     public DateTime Time { get; set; }
-    public string Message { get; set; }
+    public string ProtocolId { get; set; }
     public object? Value { get; set; }
 
 
-    public RobotLog(DateTime time, string message, object? value = null)
+    public RobotLog(DateTime time, string protocolId, object? value = null)
     {
         this.Time = time;
-        this.Message = message;
+        this.ProtocolId = protocolId;
         this.Value = value;
     }
 }

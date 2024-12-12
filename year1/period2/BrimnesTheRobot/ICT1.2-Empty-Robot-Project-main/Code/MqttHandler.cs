@@ -14,6 +14,9 @@ class MqttHandler : IRobotObject
     public MqttHandler(NewEventHandler eventHandler)
     {
         this.EventHandler = eventHandler;
+
+        // when on a public broker, use this to randomise the topic
+        // this reduces the chance of someone hijacking the robot
         if (RobotConfig.MQTT_TOPIC_RANDOMISATION)
         {
             this.MqttTopicOffset = $"/{Guid.NewGuid().ToString()}";
@@ -24,8 +27,9 @@ class MqttHandler : IRobotObject
             this.MqttTopicOffset = "";
         }
         this.activated = false;
+
         this.OnInit();
-        // het boeit niet dat er geen await is, zolang er maar niks hieronder komt
+        // het boeit niet dat er geen await is bij de OnInit(), zolang er maar niks hieronder komt
     }
 
     public async Task<bool> SendMqttMessage(string message, string topic = RobotConfig.DEFAULT_MQTT_DATA_SENDING_TOPIC)
@@ -44,14 +48,15 @@ class MqttHandler : IRobotObject
                     .Build();
 
         await this.MqttClient.PublishAsync(messageObject);
-        // await Task.Delay(1000); // Wait for 1 second
         return true;
     }
 
     public async void OnInit()
     {
         Console.WriteLine("Starting MQTT client...");
-
+        // this below code is a modified version of the EMQX C# MQTT client example
+        // but there is not much to change, so it's mostly the same
+        // https://www.emqx.com/en/blog/connecting-to-serverless-mqtt-broker-with-mqttnet-in-csharp
         string broker = RobotConfig.MQTT_BROKER;
         int port = RobotConfig.MQTT_PORT;
         string topic = RobotConfig.MQTT_DATA_RECEIVING_TOPIC;

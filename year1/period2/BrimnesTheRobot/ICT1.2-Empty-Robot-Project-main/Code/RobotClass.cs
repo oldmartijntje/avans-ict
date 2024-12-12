@@ -1,10 +1,12 @@
 
 using System.Text.Json;
 using Avans.StatisticalRobot;
+using Newtonsoft.Json;
 using RobotProject.EventHandler;
 
 class RobotClass : IRobotObject
 {
+    // the full robot, this is the main class that handles all the logic
     public NewEventHandler EventHandler { get; set; }
     private int TickId { get; set; }
     private List<RobotLog> Logs { get; set; }
@@ -24,13 +26,15 @@ class RobotClass : IRobotObject
         this.OnInit();
     }
 
-    private void AppendLog(string message)
+    private void AppendLog(string protocol, object? value = null)
     {
-        this.Logs.Add(new RobotLog(DateTime.Now, message));
+        // add the MQTT log to the logs
+        this.Logs.Add(new RobotLog(DateTime.Now, protocol, value));
     }
 
     public void OnInit()
     {
+        // subscribe to all events
         this.EventHandler.On("ButtonEmergancyPressed", this, (value) =>
         {
             if (this.Mode == RobotMode.EmergancyStop)
@@ -54,6 +58,7 @@ class RobotClass : IRobotObject
                 Console.WriteLine($"Invalid SetRobotMode value: {value}");
                 return;
             }
+            this.AppendLog("SetRobotMode", (string)value);
             if ((string)value == "On")
             {
                 this.Mode = RobotMode.On;
@@ -75,9 +80,9 @@ class RobotClass : IRobotObject
         if (this.TickId % RobotConfig.MQTT_REPORT_TICK_INTERVAL == 0)
         {
             // Send logs over mqtt
-            this.Logs.Add(new RobotLog(DateTime.Now, "Ping"));
+            this.AppendLog("Ping");
             this.ReportDataToMqtt();
-            this.Logs.Add(new RobotLog(DateTime.Now, "PreviousPing"));
+            this.AppendLog("PreviousPing");
 
         }
         if (this.TickId % RobotConfig.ROBOT_BUTTON_CHECK_TICK_INTERVAL == 0)
@@ -107,11 +112,7 @@ class RobotClass : IRobotObject
         }
         List<RobotLog> localLogs = this.Logs;
         this.Logs = new List<RobotLog>();
-        string StringifiedLogs = JsonSerializer.Serialize(localLogs, new JsonSerializerOptions
-        {
-            WriteIndented = true // Makes the JSON pretty (4 spatie indent)
-        });
-
+        string StringifiedLogs = JsonConvert.SerializeObject(localLogs, Formatting.Indented);
 
         // report the data to MQTT
         this.MqttHandler.SendMqttMessage($"{StringifiedLogs}").ContinueWith(task =>
